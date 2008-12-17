@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Highlight;
+use Term::Highlight;
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
 $VERSION = "1.4";
@@ -15,7 +15,7 @@ $PROGNAME, version $VERSION. Reads text data and highlights specified patterns.
 Usage: $PROGNAME [global-options] [highlight-options] [- file1 [file2] ... ]
 
 Global options affect the behaviour of the program globally:
-    1. -g (-grep) to output only those lines which include patterns.
+    1. -g (-grep) to print only lines which include patterns.
     2. -d (-debug) to turn on debug support
     3. -r to grep recursively, implies '-g'.
        If file list is empty, recursive search is performed in local directory.
@@ -108,7 +108,7 @@ while ( my $arg = shift )
 
 
 #create a new highlight object with "xterm" tag type
-$hl = Highlight->new( tagtype => $TAGTYPE );
+$hl = Term::Highlight->new( tagtype => $TAGTYPE );
 
 #process command line arguments
 $hl->LoadArgs( \@Hl_args );
@@ -188,33 +188,29 @@ else
 
 =head1 NAME
 
-hl
+hl - terminal search pattern colorization solution
 
 =head1 DESCRIPTION
 
-Reads text data from stdin and outputs it on the console with specified patterns highlighted using
-xterm color escape sequences; supports 256 color xterm extension.
+Reads text from list of files or stdin and prints it on the console
+with specified patterns highlighted using terminal color escape sequences;
+supports 256 color xterm extension.
 
-=head1 PREREQUISITES
+=head1 SYNOPSIS
 
-None
+Run hl -h for details
 
-=head1 COREQUISITES
+=head1 SEE ALSO
 
-None
-
-=head1 README
-
-Reads text data from stdin and outputs it on the console with specified patterns highlighted using
-xterm color escape sequences; supports 256 color xterm extension.
+Term::Highlight
 
 =head1 Author
 
-Alexey Radkov <raks@inbox.ru> 
+Alexey Radkov <alexey.radkov@gmail.com> 
 
 =head1 HISTORY
 
-=over 4
+=over 5
 
 =item 1.
 
@@ -237,8 +233,9 @@ Alexey Radkov <raks@inbox.ru>
 
 =item 5.
 
-2008/12/16 - Version 1.4 - support for HL_INITSTRING environment variable which can be used to set
-                common options (e.g. default hl color) for all cases.
+2008/12/16 - Version 1.4 - support for HL_INITSTRING environment variable
+                which can be used to set common options (e.g. default hl color)
+                for all cases.
 
 =back
 
@@ -249,4 +246,3 @@ Any, color xterm
 Search
 
 =cut
-

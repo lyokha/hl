@@ -1,9 +1,17 @@
-package Highlight;
-require Exporter;
-@ISA = qw(Exporter);
+package Term::Highlight;
 
-( $MODULENAME = __FILE__ ) =~ s/.*\///;
-$VERSION = "1.1";
+require Exporter;
+
+use strict;
+
+our @ISA = qw( Exporter );
+
+our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
+
+our $VERSION = '1.1';
+
+
+our @Patterns;
 
 
 sub new
@@ -66,7 +74,7 @@ sub LoadArgs
                     if ( ( my $orig = $1 ) =~ /\d{1,3}(?=\.0)?/ )
                                         { $fgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
                                           last SWITCH_OPTS }
-                    print "$MODULENAME: Warning: unknown option '-$1'\n";
+                    print __PACKAGE__, " : Warning: unknown option '-$1'\n";
                 }
                 $lastPatternOmitted = 1;
                 last SWITCH_ARGS;
@@ -263,3 +271,34 @@ sub Process
 
 1;
 
+
+=head1 NAME
+
+Term::Highlight - Perl extension to highlight regexp patterns on terminals
+
+=head1 DESCRIPTION
+
+Term::Highlight is shipped with hl frontend
+
+=head1 SYNOPSIS
+
+use Highlight;
+Run hl -h to see options
+
+=head1 SEE ALSO
+
+hl
+
+=head1 AUTHOR
+
+A. Radkov, E<lt>alexey.radkov@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2008 by A. Radkov
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.8 or,
+at your option, any later version of Perl 5 you may have available.
+
+=cut
