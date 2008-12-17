@@ -1,0 +1,252 @@
+#!/usr/bin/env perl
+
+use Highlight;
+
+( $PROGNAME = $0 ) =~ s/.*\///;
+$VERSION = "1.4";
+$TAGTYPE = "xterm";
+
+
+sub PrintUsage
+{
+print << "EOHELP"
+$PROGNAME, version $VERSION. Reads text data and highlights specified patterns.
+
+Usage: $PROGNAME [global-options] [highlight-options] [- file1 [file2] ... ]
+
+Global options affect the behaviour of the program globally:
+    1. -g (-grep) to output only those lines which include patterns.
+    2. -d (-debug) to turn on debug support
+    3. -r to grep recursively, implies '-g'.
+       If file list is empty, recursive search is performed in local directory.
+    4. -l to get the list of files where matches were found, implies '-g'.
+    5. -b (-bin) to enable processing of binary files (not enabled by default).
+    6. -h (-help) to print this message and exit.
+The first occurence of an option which was not mentioned above means
+the beginning of highlight options.
+
+Highlight options have the next structure:
+    [ [ [options] [patterns] ] [options] [patterns] ... ],
+where 'option' must start with '-' and may be one of the following:
+    1. Color id (see below).
+    2. -i to set ignorecase search.
+    4. -ni to unset ignorecase search.
+    5. -b to set bold font.
+    6. -rfg to reset foreground color to default value.
+    7. -rb to reset bold font to normal.
+    8. -rbg to reset background color to default value.
+    9. -r to reset background color and bold font.
+    10. -ra to reset all settings to default values.
+Last options are remembered until they are reset with new values or '-r'.
+
+Color id should range within 0..255.
+If your console does not support 256 color extension, valid colors range 0..15.
+Special suffices can be added to the ids, '.0' designates foreground color,
+'.1' - background color.  The '.0' suffix may be omitted.
+If highlight options are not followed by a pattern they will apply to the whole text.
+
+Option '-' denotes the end of the highlight options and beginning of file list,
+if file list is empty, program reads from stdin, i.e. it can be used in pipes.
+
+A 'pattern' should be perl compatible regular expression.
+
+Example:
+    $PROGNAME -b -46.1 -21 '\\bw.*?\\b'
+reads from stdin and highlights any word which starts with 'w'
+with bold blue on green background.
+
+Highlight options may be specified in HL_INITSTRING environment variable,
+which will be prepended to options from command line.
+For example setting HL_INITSTRING="-21 -i" will make hl highlight patterns with
+blue and ignore case of them.
+Note: HL_INITSTRING must not contain global options!
+
+EOHELP
+}
+
+
+
+# MAIN LOOP BEGIN
+
+
+push @Hl_args, split '\s+', $ENV{ HL_INITSTRING } if exists $ENV{ HL_INITSTRING };
+
+while ( my $arg = shift )
+{
+    last if $arg eq '-';
+    SWITCH_ARGS :
+    {
+        last SWITCH_ARGS if $Hl_args;
+        if ( $arg eq "-h" || $arg eq "-help" || $arg eq "--help" || $arg eq "--version" )
+        {
+            PrintUsage; exit 0;
+        }
+        if ( $arg eq "-d" || $arg eq "-debug" || $arg eq "--debug" )
+        {
+            $TAGTYPE = "debug-xterm";
+        }
+        if ( $arg eq "-g" || $arg eq "-grep" || $arg eq "--grep" )
+        {
+            $Grep = 1; last SWITCH_ARGS;
+        }
+        if ( $arg eq "-r" )
+        {
+            $Grep = 1; $GrepRecursively = 1; last SWITCH_ARGS;
+        }
+        if ( $arg eq "-l" )
+        {
+            $Grep = 1; $GrepList = 1; last SWITCH_ARGS;
+        }
+        if ( $arg eq "-b" || $arg eq "-bin" || $arg eq "--binary" )
+        {
+            $BinarySupport = 1; last SWITCH_ARGS;
+        }
+        $Hl_args = 1;
+    }
+    push @Hl_args, $arg if $Hl_args;
+}
+
+
+#create a new highlight object with "xterm" tag type
+$hl = Highlight->new( tagtype => $TAGTYPE );
+
+#process command line arguments
+$hl->LoadArgs( \@Hl_args );
+
+
+#remove binary files from file list if binary support is not enabled
+@ARGV = grep { -T or -d } @ARGV unless $BinarySupport;
+
+
+#process STDIN or file list line by line
+if ( $GrepRecursively )
+{
+    use File::Find;
+    $File::Find::prune = 1;
+    @ARGV || push @ARGV, './';
+    find sub
+    {
+        my ( $FullFile, $File, $FileIsBinary ) = ( $File::Find::name, $_, -B $_ );
+        return unless -f $File;
+        return if $FileIsBinary && ! $BinarySupport;
+        open FILE, "< $File" or warn $!;
+        binmode( FILE ) if $FileIsBinary;
+        while ( <FILE> )
+        {
+            next if ! $hl->Process( \$_ );
+            print "$FullFile\n" if $GrepList && ! $FileIsBinary;
+            print "Binary file $FullFile matches\n" if $FileIsBinary;
+            last if $GrepList || $FileIsBinary;
+            print "$FullFile: $_";
+        }
+        close FILE;
+    }, @ARGV
+}
+else
+{
+    @ARGV || push @ARGV, *STDIN;
+    my $print_filename = @ARGV > 1;
+    for my $File( @ARGV )
+    {
+        my ( $FileHandle, $FileIsBinary );
+        if ( $File eq *STDIN )
+        {
+            $FileHandle = *STDIN;
+        }
+        else
+        {
+            unless ( open $FileHandle, "< $File" )
+            {
+                warn( "Unable to open $File: $!" );
+                next;
+            }
+            if ( -d $FileHandle )
+            {
+                warn( "$File is a directory, ignored" );
+                next;
+            }
+            $FileIsBinary = -B $FileHandle;
+        }
+        binmode( $FileHandle ) if $FileIsBinary;
+        while ( <$FileHandle> )
+        {
+            next if ! $hl->Process( \$_ ) && $Grep;
+            #debug purpose
+            #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], @${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );
+            print "$File\n" if $GrepList && ! $FileIsBinary;
+            print "Binary file $File matches\n" if $FileIsBinary;
+            last if $GrepList || $FileIsBinary;
+            #print current line
+            my $header = "$File: " if $print_filename;
+            print $header, $_;
+        }
+        close $FileHandle;
+    }
+}
+
+
+
+=head1 NAME
+
+hl
+
+=head1 DESCRIPTION
+
+Reads text data from stdin and outputs it on the console with specified patterns highlighted using
+xterm color escape sequences; supports 256 color xterm extension.
+
+=head1 PREREQUISITES
+
+None
+
+=head1 COREQUISITES
+
+None
+
+=head1 README
+
+Reads text data from stdin and outputs it on the console with specified patterns highlighted using
+xterm color escape sequences; supports 256 color xterm extension.
+
+=head1 Author
+
+Alexey Radkov <raks@inbox.ru> 
+
+=head1 HISTORY
+
+=over 4
+
+=item 1.
+
+2006/01/16 - Version 1.0 - first functional version.
+
+=item 2.
+
+2006/02/10 - Version 1.1 - generic approach to 16/256 color terminals.
+
+=item 3.
+
+2006/02/13 - Version 1.2 - basic functionality moved to Highlight.pm,
+                supports grep option ('-g') with recursive search ('-r'),
+                reads from STDIN as well as from file list.
+
+=item 4.
+
+2006/02/15 - Version 1.3 - more sophisticated option reset functionality added.
+                Support for binary files added.
+
+=item 5.
+
+2008/12/16 - Version 1.4 - support for HL_INITSTRING environment variable which can be used to set
+                common options (e.g. default hl color) for all cases.
+
+=back
+
+=pod OSNAMES
+Any, color xterm
+
+=pod SCRIPT CATEGORIES
+Search
+
+=cut
+
