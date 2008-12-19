@@ -8,16 +8,14 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
 
-our $VERSION = '1.1';
-
-
-our @Patterns;
+our $VERSION = "1.2";
 
 
 sub new
 {
-    my $proto = shift;
-    bless { @_ }, ref $proto || $proto;
+    my $class = shift;
+    my $self = { @_ };
+    bless $self, ref $class || $class;
 }
 
 
@@ -80,34 +78,35 @@ sub LoadArgs
                 last SWITCH_ARGS;
             }
             $bold ||= 0;    #make libvte happy (though xterm does not need it to be set explicitly)
-            #populate pattern data
+            #populate patterns data
             if ( $ignorecase )
             {
-                push @Patterns, [ qr/$arg/i, $fgcolor, $bold, $bgcolor ];
+                push @{ $self->{ Patterns } }, [ qr/$arg/i, $fgcolor, $bold, $bgcolor ];
             }
             else
             {
-                push @Patterns, [ qr/$arg/, $fgcolor, $bold, $bgcolor ];
+                push @{ $self->{ Patterns } }, [ qr/$arg/, $fgcolor, $bold, $bgcolor ];
             }
             $lastPatternOmitted = 0;
         }
     }
     #push undefined pattern for last options not followed by any pattern
     #which will apply for the whole string
-    push @Patterns, [ undef, $fgcolor, $bold ] if $lastPatternOmitted;
+    push @{ $self->{ Patterns } }, [ undef, $fgcolor, $bold ] if $lastPatternOmitted;
 }
 
 
 sub LoadPatterns
 {
     my ( $self, $patterns ) = @_;
-    push @Patterns, @$patterns;
+    push @{ $self->{ Patterns } }, @$patterns;
 }
 
 
 sub ClearPatterns
 {
-    @Patterns = ();
+    my $self = shift;
+    @{ $self->{ Patterns } } = ();
 }
 
 
@@ -193,10 +192,10 @@ sub InsertTags
         {
             SWITCH_TAGTYPE:
             {
-                if ( $tagtype eq "xterm" )
+                if ( $tagtype eq "term" )
                 {
                     use integer;
-                    #standard 16-color term
+                    #color id in [0..15]
                     if ( ${ $$position[ 4 ] }->[ 1 ] < 16 && ${ $$position[ 4 ] }->[ 3 ] < 16 )
                     {
                         my $fgcolor = ';3' . ${ $$position[ 4 ] }->[ 1 ] % 8 if defined
@@ -211,7 +210,7 @@ sub InsertTags
                         $bgcolor = '4' . $bgcolor . ';' if defined $bgcolor;
                         $colortag = qq/\033[$bgcolor$bold${fgcolor}m/;
                     }
-                    #256-color term
+                    #color id in [16..255]
                     else
                     {
                         $colortag = qq/\033[${ $$position[ 4 ] }->[ 2 ];38;5;${ $$position[ 4 ] }->[ 1 ]m/
@@ -221,7 +220,7 @@ sub InsertTags
                     }
                     last SWITCH_TAGTYPE;
                 }
-                if ( $tagtype eq "debug" || $tagtype eq "debug-xterm" )
+                if ( $tagtype eq "debug" || $tagtype eq "debug-term" )
                 {
                     $colortag = "{_$$position[ 3 ]_"; last SWITCH_TAGTYPE;
                 }
@@ -231,8 +230,8 @@ sub InsertTags
         {
             SWITCH_TAGTYPE:
             {
-                if ( $tagtype eq "xterm" ) { $colortag = qq/\033[0m/; last SWITCH_TAGTYPE; }
-                if ( $tagtype eq "debug" || $tagtype eq "debug-xterm" )
+                if ( $tagtype eq "term" ) { $colortag = qq/\033[0m/; last SWITCH_TAGTYPE; }
+                if ( $tagtype eq "debug" || $tagtype eq "debug-term" )
                 {
                     $colortag = "_$$position[ 3 ]_}"; last SWITCH_TAGTYPE;
                 }
@@ -254,14 +253,15 @@ sub Process
     my @Positions;
 
     #populate @Positions
-    my $found_matches = FindPositionsOfTags( \@Positions, \@Patterns, $String_ref ) or return 0;
+    my $found_matches = FindPositionsOfTags( \@Positions, \@{ $self->{ Patterns } }, $String_ref )
+        or return 0;
 
     #do not change original string and return found positions if an array is expected
     return @Positions if wantarray;
 
     #replace all but the last ending tags from @Positions by one-before-the-last starting tag
-    #(crucial for xterm color escape sequences algorithm)
-    RearrangePositionsOfTags( \@Positions, \@Patterns );
+    #(crucial for terminal color escape sequences algorithm)
+    RearrangePositionsOfTags( \@Positions, \@{ $self->{ Patterns } } );
     
     #insert tags into current line
     InsertTags( \@Positions, $String_ref, $$self{ tagtype } );
@@ -269,25 +269,70 @@ sub Process
     $found_matches;
 }
 
-1;
-
 
 =head1 NAME
 
-Term::Highlight - Perl extension to highlight regexp patterns on terminals
-
-=head1 DESCRIPTION
-
-Term::Highlight is shipped with hl frontend
+Term::Highlight - perl module to highlight regexp patterns on terminals
 
 =head1 SYNOPSIS
 
-use Highlight;
-Run hl -h to see options
+=over
+
+=item use Term::Highlight;
+
+=item $obj = Term::Highlight->new( tagtype => $TAGTYPE );
+
+=item $obj->LoadArgs( \@args );
+
+=item $obj->LoadPatterns( \@ptns );
+
+=item $obj->ClearPatterns( );
+
+=item $obj->Process( \$string );
+
+=back
+
+Currently C<term> and C<term-debug> tagtypes are supported.
+If tagtype is C<term> then boundaries of found patterns will be enclosed in
+terminal color escape sequence tags, if tagtype is C<term-debug> then they
+will be marked by symbolic sequences.
+
+=head1 DESCRIPTION
+
+Term::Highlight is perl module aimed to support highlighting of patterns
+on color terminals. It supports 256 color terminals and older
+8 color terminals.
+
+=head1 EXPORTS
+
+=over
+
+=item B<LoadPatterns>
+
+expects reference to array of references to arrays of structure
+[ $pattern, $fg, $bold, $bg ]. Load patterns to be processed.
+
+=item B<ClearPatterns>
+
+clear loaded patterns.
+
+=item B<LoadArgs>
+
+expects array of references to strings. Loads patterns to be processed.
+This is just a convenient version of C<LoadPatterns>.
+Example of array to be loaded:
+[ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ].
+
+=item B<Process>
+
+expects reference to string. Make substitution of color tags inside the
+string. Returns count of found matches.
+
+=back
 
 =head1 SEE ALSO
 
-hl
+hl(1)
 
 =head1 AUTHOR
 
@@ -295,10 +340,12 @@ A. Radkov, E<lt>alexey.radkov@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008 by A. Radkov
+Copyright (C) 2008 by A. Radkov.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
 at your option, any later version of Perl 5 you may have available.
 
 =cut
+
+1;

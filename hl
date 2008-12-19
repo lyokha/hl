@@ -3,64 +3,39 @@
 use Term::Highlight;
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.4";
-$TAGTYPE = "xterm";
+$VERSION = "1.5";
+$TAGTYPE = "term";
 
 
 sub PrintUsage
 {
 print << "EOHELP"
-$PROGNAME, version $VERSION. Reads text data and highlights specified patterns.
+$PROGNAME, version $VERSION. See man pages for details.
 
-Usage: $PROGNAME [global-options] [highlight-options] [- file1 [file2] ... ]
+Usage: $PROGNAME [global-options] [highlight-options [patterns] ...] [- file1 [file2] ...]
 
 Global options affect the behaviour of the program globally:
-    1. -g (-grep) to print only lines which include patterns.
-    2. -d (-debug) to turn on debug support
-    3. -r to grep recursively, implies '-g'.
-       If file list is empty, recursive search is performed in local directory.
-    4. -l to get the list of files where matches were found, implies '-g'.
-    5. -b (-bin) to enable processing of binary files (not enabled by default).
-    6. -h (-help) to print this message and exit.
-The first occurence of an option which was not mentioned above means
-the beginning of highlight options.
+    -g (-grep) prints only lines which include patterns.
+    -r greps recursively, implies '-g'.
+       If file list is empty, starts search in current directory.
+    -l prints the list of files where matches were found, implies '-g'.
+    -b (-bin) enables processing of binary files (not enabled by default).
+    -d (-debug) turns on debug support (colors printed out as symbolic sequences).
+    -h (-help) prints this message and exit.
 
-Highlight options have the next structure:
-    [ [ [options] [patterns] ] [options] [patterns] ... ],
-where 'option' must start with '-' and may be one of the following:
-    1. Color id (see below).
-    2. -i to set ignorecase search.
-    4. -ni to unset ignorecase search.
-    5. -b to set bold font.
-    6. -rfg to reset foreground color to default value.
-    7. -rb to reset bold font to normal.
-    8. -rbg to reset background color to default value.
-    9. -r to reset background color and bold font.
-    10. -ra to reset all settings to default values.
-Last options are remembered until they are reset with new values or '-r'.
-
-Color id should range within 0..255.
-If your console does not support 256 color extension, valid colors range 0..15.
-Special suffices can be added to the ids, '.0' designates foreground color,
-'.1' - background color.  The '.0' suffix may be omitted.
-If highlight options are not followed by a pattern they will apply to the whole text.
-
-Option '-' denotes the end of the highlight options and beginning of file list,
-if file list is empty, program reads from stdin, i.e. it can be used in pipes.
-
-A 'pattern' should be perl compatible regular expression.
-
-Example:
-    $PROGNAME -b -46.1 -21 '\\bw.*?\\b'
-reads from stdin and highlights any word which starts with 'w'
-with bold blue on green background.
-
-Highlight options may be specified in HL_INITSTRING environment variable,
-which will be prepended to options from command line.
-For example setting HL_INITSTRING="-21 -i" will make hl highlight patterns with
-blue and ignore case of them.
-Note: HL_INITSTRING must not contain global options!
-
+Highlight options apply to the following them patterns:
+    -x[xx][.b] highlights following patterns with color id x[xx], x[xx] is a number
+               within [0..255] range, b is 0 or 1 and stands for background.
+               If b is 0, color id applies to foreground, if it is 1 - to background.
+               Suffix .b may be omitted in which case b is equal to 0.
+    -i sets ignorecase search.
+    -ni unsets ignorecase search.
+    -b sets bold font.
+    -rfg resets foreground color to default value.
+    -rb resets bold font to normal.
+    -rbg resets background color to default value.
+    -r resets both background color and bold font.
+    -ra resets all settings to default values.
 EOHELP
 }
 
@@ -83,7 +58,7 @@ while ( my $arg = shift )
         }
         if ( $arg eq "-d" || $arg eq "-debug" || $arg eq "--debug" )
         {
-            $TAGTYPE = "debug-xterm";
+            $TAGTYPE = "debug-term";
         }
         if ( $arg eq "-g" || $arg eq "-grep" || $arg eq "--grep" )
         {
@@ -107,7 +82,7 @@ while ( my $arg = shift )
 }
 
 
-#create a new highlight object with "xterm" tag type
+#create a new highlight object
 $hl = Term::Highlight->new( tagtype => $TAGTYPE );
 
 #process command line arguments
@@ -188,61 +163,150 @@ else
 
 =head1 NAME
 
-hl - terminal search pattern colorization solution
-
-=head1 DESCRIPTION
-
-Reads text from list of files or stdin and prints it on the console
-with specified patterns highlighted using terminal color escape sequences;
-supports 256 color xterm extension.
+hl - terminal patterns highlighter
 
 =head1 SYNOPSIS
 
-Run hl -h for details
+hl [global-options] [highlight-options [patterns] ...] [- file1 [file2] ...]
 
-=head1 SEE ALSO
+=head1 DESCRIPTION
 
-Term::Highlight
+hl reads text from list of files or stdin and prints it on the console
+with specified patterns highlighted using terminal color escape sequences.
+Patterns are intrinsically perl-compatible regular expressions.
 
-=head1 Author
+Global options are processed internally by hl whereas highlight options
+are passed into Term::Highlight module, therefore they should not mix.
+The first occurence of an option which are not recognized as global is
+regarded as the beginning of highlight options.
 
-Alexey Radkov <alexey.radkov@gmail.com> 
+=head3 Global options:
 
-=head1 HISTORY
+=over
 
-=over 5
+=item -g (-grep)
 
-=item 1.
+prints only lines which match specified patterns.
 
-2006/01/16 - Version 1.0 - first functional version.
+=item -r
 
-=item 2.
+greps recursively, implies '-g'.
+If file list is empty starts search in current directory.
 
-2006/02/10 - Version 1.1 - generic approach to 16/256 color terminals.
+=item -l
 
-=item 3.
+prints the list of files where matches were found, implies '-g'.
 
-2006/02/13 - Version 1.2 - basic functionality moved to Highlight.pm,
-                supports grep option ('-g') with recursive search ('-r'),
-                reads from STDIN as well as from file list.
+=item -b (-bin)
 
-=item 4.
+enables processing of binary files (not enabled by default).
 
-2006/02/15 - Version 1.3 - more sophisticated option reset functionality added.
-                Support for binary files added.
+=item -d (-debug)
 
-=item 5.
+turns on debug support (colors printed out as symbolic sequences).
 
-2008/12/16 - Version 1.4 - support for HL_INITSTRING environment variable
-                which can be used to set common options (e.g. default hl color)
-                for all cases.
+=item -h (-help)
+
+prints this message and exit.
 
 =back
 
-=pod OSNAMES
-Any, color xterm
+=head3 Highligh options:
 
-=pod SCRIPT CATEGORIES
-Search
+=over
+
+=item -x[xx][.b]
+
+highlights following patterns with color defined by number x[xx].
+x[xx] is color id corresponding to terminal color escape sequence number
+and should range within [0..255]. I<b> is 0 or 1, .0 applies the color id
+to foreground, .1 - to background, .0 is default value and may be omitted.
+If your terminal does not support 256 colors valid color ids are [0..15].
+I<Note>: if your terminal is 256 colors capable better use [16..255] colors!
+To see how many colors your terminal supports use B<tput colors> command.
+
+=item -i
+
+sets ignorecase search.
+
+=item -ni
+
+unsets ignorecase search.
+
+=item -b
+
+sets bold font.
+
+=item -rfg
+
+resets foreground color to default value.
+
+=item -rb
+
+resets bold font to normal.
+
+=item -rbg
+
+resets background color to default value.
+
+=item -r
+
+resets both background color and bold font.
+
+=item -ra
+
+resets all settings to default values.
+
+=back
+
+=head3 Option '-'
+
+is used to separate list of files to process from global and highlight options.
+This is necessary option when reading from files due to the fact that hl can be fed
+with list of files or from stdin or pipe.
+
+Highlight options apply to following them regexp patterns if any.
+If trailing highlight options are not followed by patterns they apply to whole text.
+
+It is possible to define common highlight options on session level.
+hl supports environment variable B<HL_INITSTRING> which value will be prepended to
+any highlight options given in command line.
+
+=head1 ENVIRONMENT VARIABLES
+
+=over
+
+=item B<HL_INITSTRING>
+
+defines common highlight options which will be prepended to any highlight options
+given in command line. For example setting B<HL_INITSTRING>="-21 -i" will make hl
+highlight patterns with blue (color id 21) and ignore case of them without explicit
+definition of highlight options in command line.
+I<Note>: B<HL_INITSTRING> must not contain global options!
+
+=back
+
+=head1 EXAMPLES
+
+B<ls | hl -b -46.1 -21 '\bw.*?\b>
+
+reads output of B<ls> command and highlight words starting with I<w> with bold blue
+(color id 21) foreground and green (color id 46) background.
+
+=head1 SEE ALSO
+
+Term::Highlight(3), tput(1)
+
+=head1 AUTHOR
+
+Alexey Radkov <alexey.radkov@gmail.com> 
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2008 by A. Radkov.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.8 or,
+at your option, any later version of Perl 5 you may have available.
 
 =cut
