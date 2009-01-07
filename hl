@@ -58,7 +58,7 @@ while ( my $arg = shift )
         }
         if ( $arg eq "-d" || $arg eq "-debug" || $arg eq "--debug" )
         {
-            $TAGTYPE = "debug-term";
+            $TAGTYPE = "debug-term"; last SWITCH_ARGS;
         }
         if ( $arg eq "-g" || $arg eq "-grep" || $arg eq "--grep" )
         {
@@ -288,7 +288,7 @@ I<Note>: B<HL_INITSTRING> must not contain global options!
 
 =head1 EXAMPLES
 
-B<ls | hl -b -46.1 -21 '\bw.*?\b>
+B<ls | hl -b -46.1 -21 '\bw.*?\b'>
 
 reads output of B<ls> command and highlight words starting with I<w> with bold blue
 (color id 21) foreground and green (color id 46) background.
