@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight 
-Version:    1.5
+Version:    1.6
 Release:    1%{?dist}
 License:    GPL+ or Artistic 
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Tue Aug 17 2010 Alexey Radkov <alexey.radkov@gmail.com> 1.6-1
+- version 1.6, hl script bugfix
+
 * Thu Dec 25 2008 Alexey Radkov <alexey.radkov@gmail.com> 1.5-1
 - initial RPM packaging
 

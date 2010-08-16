@@ -2,9 +2,9 @@
 
 use Term::Highlight;
 
-( my $PROGNAME = $0 ) =~ s/.*\///;
-my $VERSION = "1.5";
-my $TAGTYPE = "term";
+( $PROGNAME = $0 ) =~ s/.*\///;
+$VERSION = "1.6";
+$TAGTYPE = "term";
 
 
 sub PrintUsage
