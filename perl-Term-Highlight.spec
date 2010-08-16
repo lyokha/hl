@@ -5,7 +5,7 @@ License:    GPL+ or Artistic
 Group:      Development/Libraries
 Summary:    Simple way to highlight perl-compatible regexp patterns on terminals
 Source:     http://search.cpan.org/CPAN/authors/id/R/RA/RADKOV/Term-Highlight-%{version}.tar.gz 
-Url:        http://search.cpan.org/dist/Term-Highlight
+Url:        http://hlterm.sourceforge.net
 BuildArch:  noarch
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n) 
 Requires:   perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))

@@ -2,9 +2,9 @@
 
 use Term::Highlight;
 
-( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.5";
-$TAGTYPE = "term";
+( my $PROGNAME = $0 ) =~ s/.*\///;
+my $VERSION = "1.5";
+my $TAGTYPE = "term";
 
 
 sub PrintUsage
@@ -42,7 +42,6 @@ EOHELP
 
 
 # MAIN LOOP BEGIN
-
 
 push @Hl_args, split '\s+', $ENV{ HL_INITSTRING } if exists $ENV{ HL_INITSTRING };
 
@@ -83,14 +82,14 @@ while ( my $arg = shift )
 
 
 #create a new highlight object
-$hl = Term::Highlight->new( tagtype => $TAGTYPE );
+my $hl = Term::Highlight->new( tagtype => $TAGTYPE );
 
 #process command line arguments
 $hl->LoadArgs( \@Hl_args );
 
 
 #remove binary files from file list if binary support is not enabled
-@ARGV = grep { -T or -d } @ARGV unless $BinarySupport;
+my @Files = grep { -T or -d } @ARGV unless $BinarySupport;
 
 
 #process STDIN or file list line by line
@@ -98,7 +97,7 @@ if ( $GrepRecursively )
 {
     use File::Find;
     $File::Find::prune = 1;
-    @ARGV || push @ARGV, './';
+    @Files || push @Files, './';
     find sub
     {
         my ( $FullFile, $File, $FileIsBinary ) = ( $File::Find::name, $_, -B $_ );
@@ -115,13 +114,13 @@ if ( $GrepRecursively )
             print "$FullFile: $_";
         }
         close FILE;
-    }, @ARGV
+    }, @Files
 }
 else
 {
-    @ARGV || push @ARGV, *STDIN;
-    my $print_filename = @ARGV > 1;
-    for my $File( @ARGV )
+    @Files || push @Files, *STDIN;
+    my $print_filename = @Files > 1;
+    for my $File( @Files )
     {
         my ( $FileHandle, $FileIsBinary );
         if ( $File eq *STDIN )
