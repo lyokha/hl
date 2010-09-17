@@ -27,3 +27,6 @@ Revision history for Perl extension Highlight.
 2010/08/17 - Version 1.6 - bugfix in hl script.
                 "Attempt to free unreferenced scalar value" message at exit is
                 now fixed.
+
+2010/09/17 - Version 1.7 - in hl added possibility to store highlight snippets
+                in file .hlrc in HOME directory

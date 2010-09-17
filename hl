@@ -3,8 +3,10 @@
 use Term::Highlight;
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.6";
+$VERSION = "1.7";
 $TAGTYPE = "term";
+$RC_FILE = "$ENV{ HOME }/.hlrc";
+$SNIPPET_PTN = qr/\s*snippet\s+(\S+)\s+(.*)/o;
 
 
 sub PrintUsage
@@ -12,22 +14,29 @@ sub PrintUsage
 print << "EOHELP"
 $PROGNAME, version $VERSION. See man pages for details.
 
-Usage: $PROGNAME [global-options] [highlight-options [patterns] ...] [- file1 [file2] ...]
+Usage: $PROGNAME [global-options] [highlight-options [patterns] ...]
+          [- file1 [file2] ...]
 
 Global options affect the behaviour of the program globally:
+    -s <snippet> loads a snippet with specified name from ~/.hlrc file.
+       The white space between '-s' and the name of snippet can be omitted.
+       For example -sW will load snippet with name 'W'. It is possible to use
+       more than one -s options with different snippet names.
     -g (-grep) prints only lines which include patterns.
     -r greps recursively, implies '-g'.
        If file list is empty, starts search in current directory.
     -l prints the list of files where matches were found, implies '-g'.
     -b (-bin) enables processing of binary files (not enabled by default).
-    -d (-debug) turns on debug support (colors printed out as symbolic sequences).
+    -d (-debug) turns on debug support (colors printed out as symbolic
+       sequences).
     -h (-help) prints this message and exit.
 
 Highlight options apply to the following them patterns:
-    -x[xx][.b] highlights following patterns with color id x[xx], x[xx] is a number
-               within [0..255] range, b is 0 or 1 and stands for background.
-               If b is 0, color id applies to foreground, if it is 1 - to background.
-               Suffix .b may be omitted in which case b is equal to 0.
+    -x[xx][.b] highlights following patterns with color id x[xx], x[xx] is a
+               number within [0..255] range, b is 0 or 1 and stands for
+               background. If b is 0, color id applies to foreground, if it is
+               1 - to background. Suffix .b may be omitted in which case b is
+               equal to 0.
     -i sets ignorecase search.
     -ni unsets ignorecase search.
     -b sets bold font.
@@ -36,14 +45,81 @@ Highlight options apply to the following them patterns:
     -rbg resets background color to default value.
     -r resets both background color and bold font.
     -ra resets all settings to default values.
+
+~/.hlrc file can contain lines of format:
+        snippet name highlight_options
+    where snippet is a keyword, name is the name of snippet and
+    highlight_options is an arbitrary line that contains highlight options.
+    Arguments within highlight_options are split by whitespaces, if you want
+    to use whitespaces inside patterns you can use single quotes. Single quote
+    itself must be prepended by backslash. Too long lines can be split into
+    multiple lines using backslash.
 EOHELP
+}
+
+
+sub LoadSnippets
+{
+    return if $rcLoaded;
+    open ( RC, "< $RC_FILE" ) or return;
+    my $command;
+    while ( <RC> )
+    {
+        if ( /\\$/o )
+        {
+            $command .= substr( $_, 0, length( $_ ) - 2 );
+            next;
+        }
+        $command .= $_;
+        next unless $command =~ /$SNIPPET_PTN/;
+        my ( $name, $snippet ) = ( $1, $2 );
+        my ( $start, $seek ) = ( 0, 0 );
+        my $waitquote = 0;
+        while ( 1 )
+        {
+            $seek = index $snippet, "'", $seek;
+
+            if ( $seek < 0 )
+            {
+                ( my $fragment = substr $snippet, $start ) =~ s/^\s+//;
+                push @{ $Snippets{ $name } }, split '\s+', $fragment;
+                last;
+            }
+
+            if ( substr( $snippet, $seek - 1, 1 ) eq "\\" )
+            {
+                ++$seek;
+                next;
+            }
+
+            unless ( $waitquote )
+            {
+                ( my $fragment = substr $snippet, $start, $seek - $start ) =~
+                                                                    s/^\s+//;
+                push @{ $Snippets{ $name } }, split '\s+', $fragment;
+                $start = ++$seek;
+                $waitquote = 1;
+                next;
+            }
+
+            push @{ $Snippets{ $name } },
+                                        substr $snippet, $start, $seek - $start;
+
+            $start = ++$seek;
+            $waitquote = 0;
+        }
+        $command = undef;
+    }
+    close ( RC );
+    $rcLoaded = 1;
 }
 
 
 
 # MAIN LOOP BEGIN
 
-push @Hl_args, split '\s+', $ENV{ HL_INITSTRING } if exists $ENV{ HL_INITSTRING };
+push @Hl_args, split '\s+', $ENV{ HL_INITSTRING } if exists
+                                                        $ENV{ HL_INITSTRING };
 
 while ( my $arg = shift )
 {
@@ -51,7 +127,8 @@ while ( my $arg = shift )
     SWITCH_ARGS :
     {
         last SWITCH_ARGS if $Hl_args;
-        if ( $arg eq "-h" || $arg eq "-help" || $arg eq "--help" || $arg eq "--version" )
+        if ( $arg eq "-h" || $arg eq "-help" || $arg eq "--help" ||
+             $arg eq "--version" )
         {
             PrintUsage; exit 0;
         }
@@ -74,6 +151,13 @@ while ( my $arg = shift )
         if ( $arg eq "-b" || $arg eq "-bin" || $arg eq "--binary" )
         {
             $BinarySupport = 1; last SWITCH_ARGS;
+        }
+        if ( $arg =~ /(?:-s)(\S*)/o )
+        {
+            LoadSnippets;
+            my $snippet = ( $1 eq undef ) ? shift : $1;
+            last SWITCH_ARGS unless exists $Snippets{ $snippet };
+            push @Hl_args, @{ $Snippets{ $snippet } }; last SWITCH_ARGS;
         }
         $Hl_args = 1;
     }
@@ -100,7 +184,8 @@ if ( $GrepRecursively )
     @Files || push @Files, './';
     find sub
     {
-        my ( $FullFile, $File, $FileIsBinary ) = ( $File::Find::name, $_, -B $_ );
+        my ( $FullFile, $File, $FileIsBinary ) =
+                                            ( $File::Find::name, $_, -B $_ );
         return unless -f $File;
         return if $FileIsBinary && ! $BinarySupport;
         open FILE, "< $File" or warn $!;
@@ -146,7 +231,8 @@ else
         {
             next if ! $hl->Process( \$_ ) && $Grep;
             #debug purpose
-            #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], @${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );
+            #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
+            #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );
             print "$File\n" if $GrepList && ! $FileIsBinary;
             print "Binary file $File matches\n" if $FileIsBinary;
             last if $GrepList || $FileIsBinary;
@@ -182,6 +268,12 @@ regarded as the beginning of highlight options.
 =head3 Global options:
 
 =over
+
+=item - s <snippet>
+
+loads a snippet with specified name from ~/.hlrc file.  The white space between
+'-s' and the name of snippet can be omitted. For example -sW will load snippet
+with name 'W'.
 
 =item -g (-grep)
 
@@ -261,15 +353,16 @@ resets all settings to default values.
 =head3 Option '-'
 
 is used to separate list of files to process from global and highlight options.
-This is necessary option when reading from files due to the fact that hl can be fed
-with list of files or from stdin or pipe.
+This is necessary option when reading from files due to the fact that hl can be
+fed with list of files or from stdin or pipe.
 
 Highlight options apply to following them regexp patterns if any.
-If trailing highlight options are not followed by patterns they apply to whole text.
+If trailing highlight options are not followed by patterns they apply to whole
+text.
 
 It is possible to define common highlight options on session level.
-hl supports environment variable B<HL_INITSTRING> which value will be prepended to
-any highlight options given in command line.
+hl supports environment variable B<HL_INITSTRING> which value will be prepended
+to any highlight options given in command line.
 
 =head1 ENVIRONMENT VARIABLES
 
@@ -277,10 +370,10 @@ any highlight options given in command line.
 
 =item B<HL_INITSTRING>
 
-defines common highlight options which will be prepended to any highlight options
-given in command line. For example setting B<HL_INITSTRING>="-21 -i" will make hl
-highlight patterns with blue (color id 21) and ignore case of them without explicit
-definition of highlight options in command line.
+defines common highlight options which will be prepended to any highlight
+options given in command line. For example setting B<HL_INITSTRING>="-21 -i"
+will make hl highlight patterns with blue (color id 21) and ignore case of them
+without explicit definition of highlight options in command line.
 I<Note>: B<HL_INITSTRING> must not contain global options!
 
 =back
@@ -289,8 +382,29 @@ I<Note>: B<HL_INITSTRING> must not contain global options!
 
 B<ls | hl -b -46.1 -21 '\bw.*?\b'>
 
-reads output of B<ls> command and highlight words starting with I<w> with bold blue
-(color id 21) foreground and green (color id 46) background.
+reads output of B<ls> command and highlight words starting with I<w> with bold
+blue (color id 21) foreground and green (color id 46) background.
+
+=head1 FILES
+
+B<~/.hlrc>
+
+currently this file may contain only snippets that can be loaded with '-s'
+option. The format of the snippet line is
+
+B<snippet name highlight_options>
+
+where I<snippet> is a keyword, I<name> is name of the snippet and
+I<highlight_options> contains highlight options. Here is an example of snippet
+which can be used to highlight words that start with capital letter:
+
+B<snippet W       -130 (?:^|[\s])[A-Z]\S+>
+
+Lines that do not match the snippet line pattern are ignored. Arguments of
+highlight_options are naturally split by whitespaces. If you want to have
+whitespaces inside patterns you can use single quotes surrounding them. Single
+quote itself must be prepended by backslash. Too long lines cam be split into
+multiple lines using backslash.
 
 =head1 SEE ALSO
 

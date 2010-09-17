@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight 
-Version:    1.6
+Version:    1.7
 Release:    1%{?dist}
 License:    GPL+ or Artistic 
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Fri Sep 17 2010 Alexey Radkov <alexey.radkov@gmail.com> 1.7-1
+- version 1.7, hl script can now load snippets from file .hlrc in HOME directory
+
 * Tue Aug 17 2010 Alexey Radkov <alexey.radkov@gmail.com> 1.6-1
 - version 1.6, hl script bugfix
 
