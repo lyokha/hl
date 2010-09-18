@@ -403,7 +403,7 @@ B<snippet W       -130 (?:^|[\s])[A-Z]\S+>
 Lines that do not match the snippet line pattern are ignored. Arguments of
 highlight_options are naturally split by whitespaces. If you want to have
 whitespaces inside patterns you can use single quotes surrounding them. Single
-quote itself must be prepended by backslash. Too long lines cam be split into
+quote itself must be prepended by backslash. Too long lines can be split into
 multiple lines using backslash.
 
 =head1 SEE ALSO
