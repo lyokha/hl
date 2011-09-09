@@ -30,3 +30,7 @@ Revision history for Perl extension Highlight.
 
 2010/09/17 - Version 1.7 - in hl added possibility to store highlight snippets
                 in file .hlrc in HOME directory
+
+2011/09/09 - Version 1.7.1 - hl will not put color escape sequences if output
+                directed not to STDOUT: this will make it possible to use hl
+                safely in pipes
