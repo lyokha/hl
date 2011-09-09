@@ -121,6 +121,8 @@ sub LoadSnippets
 push @Hl_args, split '\s+', $ENV{ HL_INITSTRING } if exists
                                                         $ENV{ HL_INITSTRING };
 
+$TAGTYPE = "none" unless -t STDOUT;
+
 while ( my $arg = shift )
 {
     last if $arg eq '-';
