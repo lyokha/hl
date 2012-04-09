@@ -310,11 +310,11 @@ on color terminals. It supports 256 color terminals and older
 =item B<LoadPatterns>
 
 expects reference to array of references to arrays of structure
-[ $pattern, $fg, $bold, $bg ]. Load patterns to be processed.
+[ $pattern, $fg, $bold, $bg ]. Loads patterns to be processed.
 
 =item B<ClearPatterns>
 
-clear loaded patterns.
+clears loaded patterns.
 
 =item B<LoadArgs>
 
@@ -325,7 +325,7 @@ Example of array to be loaded:
 
 =item B<Process>
 
-expects reference to string. Make substitution of color tags inside the
+expects reference to string. Makes substitution of color tags inside the
 string. Returns count of found matches.
 
 =back
