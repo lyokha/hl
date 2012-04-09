@@ -271,7 +271,7 @@ regarded as the beginning of highlight options.
 
 =over
 
-=item - s <snippet>
+=item -s <snippet>
 
 loads a snippet with specified name from ~/.hlrc file.  The white space between
 '-s' and the name of snippet can be omitted. For example -sW will load snippet
