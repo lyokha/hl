@@ -3,7 +3,7 @@
 use Term::Highlight;
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.7.1";
+$VERSION = "1.7.2";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/\s*snippet\s+(\S+)\s+(.*)/o;
@@ -26,6 +26,7 @@ Global options affect the behaviour of the program globally:
     -r greps recursively, implies '-g'.
        If file list is empty, starts search in current directory.
     -l prints the list of files where matches were found, implies '-g'.
+    -u (-utf8) enables matching of Unicode characters from UTF-8 encoded input
     -b (-bin) enables processing of binary files (not enabled by default).
     -d (-debug) turns on debug support (colors printed out as symbolic
        sequences).
@@ -48,12 +49,13 @@ Highlight options apply to the following them patterns:
 
 ~/.hlrc file can contain lines of format:
         snippet name highlight_options
-    where snippet is a keyword, name is the name of snippet and
-    highlight_options is an arbitrary line that contains highlight options.
-    Arguments within highlight_options are split by whitespaces, if you want
-    to use whitespaces inside patterns you can use single quotes. Single quote
-    itself must be prepended by backslash. Too long lines can be split into
-    multiple lines using backslash.
+    where snippet is a keyword, name is the name of the snippet and
+    highlight_options is an arbitrary line that contains highlight options
+    possibly preceded by the global option '-u'. Arguments within
+    highlight_options are split by whitespaces, if you want to use whitespaces
+    inside patterns you can use single quotes. Single quote itself must be
+    prepended by backslash. Too long lines can be split into multiple lines
+    using backslash.
 EOHELP
 }
 
@@ -150,6 +152,10 @@ while ( my $arg = shift )
         {
             $Grep = 1; $GrepList = 1; last SWITCH_ARGS;
         }
+        if ( $arg eq "-u" || $arg eq "-utf8" || $arg eq "--utf8" )
+        {
+            $UTF8Support = 1; last SWITCH_ARGS;
+        }
         if ( $arg eq "-b" || $arg eq "-bin" || $arg eq "--binary" )
         {
             $BinarySupport = 1; last SWITCH_ARGS;
@@ -159,6 +165,11 @@ while ( my $arg = shift )
             LoadSnippets;
             my $snippet = ( $1 eq undef ) ? shift : $1;
             last SWITCH_ARGS unless exists $Snippets{ $snippet };
+            if ( $Snippets{ $snippet }[ 0 ] eq '-u' )
+            {
+                shift @{ $Snippets{ $snippet } };
+                $UTF8Support = 1;
+            }
             push @Hl_args, @{ $Snippets{ $snippet } }; last SWITCH_ARGS;
         }
         $Hl_args = 1;
@@ -191,7 +202,15 @@ if ( $GrepRecursively )
         return unless -f $File;
         return if $FileIsBinary && ! $BinarySupport;
         open FILE, "< $File" or warn $!;
-        binmode( FILE ) if $FileIsBinary;
+        if ( $FileIsBinary )
+        {
+            binmode( $FileHandle );
+        }
+        elsif ( $UTF8Support )
+        {
+            binmode( $FileHandle, ':utf8' );
+            binmode( STDOUT, ':utf8' );
+        }
         while ( <FILE> )
         {
             next if ! $hl->Process( \$_ );
@@ -228,7 +247,15 @@ else
             }
             $FileIsBinary = -B $FileHandle;
         }
-        binmode( $FileHandle ) if $FileIsBinary;
+        if ( $FileIsBinary )
+        {
+            binmode( $FileHandle );
+        }
+        elsif ( $UTF8Support )
+        {
+            binmode( $FileHandle, ':utf8' );
+            binmode( STDOUT, ':utf8' );
+        }
         while ( <$FileHandle> )
         {
             next if ! $hl->Process( \$_ ) && $Grep;
@@ -289,6 +316,11 @@ If file list is empty starts search in current directory.
 =item -l
 
 prints the list of files where matches were found, implies '-g'.
+
+=item -u (-utf8)
+
+enables matching of Unicode characters from UTF-8 encoded input.
+For instance matching of '\x{239C}' will not work without this option.
 
 =item -b (-bin)
 
@@ -396,9 +428,10 @@ option. The format of the snippet line is
 
 B<snippet name highlight_options>
 
-where I<snippet> is a keyword, I<name> is name of the snippet and
-I<highlight_options> contains highlight options. Here is an example of snippet
-which can be used to highlight words that start with capital letter:
+where I<snippet> is a keyword, I<name> is the name of the snippet and
+I<highlight_options> contains highlight options possibly preceded by the global
+option '-u'. Here is an example of snippet which can be used to highlight words
+that start with capital letter:
 
 B<snippet W       -130 (?:^|[\s])[A-Z]\S+>
 

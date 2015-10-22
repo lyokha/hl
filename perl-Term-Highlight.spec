@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight 
-Version:    1.7.1
+Version:    1.7.2
 Release:    1%{?dist}
 License:    GPL+ or Artistic 
 Group:      Development/Libraries
