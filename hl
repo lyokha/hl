@@ -209,7 +209,7 @@ if ( $GrepRecursively )
         elsif ( $UTF8Support )
         {
             binmode( $FileHandle, ':utf8' );
-            binmode( STDOUT, ':utf8' );
+            binmode( STDOUT, ':utf8' ) unless $GrepList;
         }
         while ( <FILE> )
         {
@@ -254,7 +254,7 @@ else
         elsif ( $UTF8Support )
         {
             binmode( $FileHandle, ':utf8' );
-            binmode( STDOUT, ':utf8' );
+            binmode( STDOUT, ':utf8' ) unless $GrepList;
         }
         while ( <$FileHandle> )
         {
