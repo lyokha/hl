@@ -34,3 +34,11 @@ Revision history for Perl extension Highlight.
 2011/09/09 - Version 1.7.1 - hl will not put color escape sequences if output
                 directed not to STDOUT: this will make it possible to use hl
                 safely in pipes
+
+2015/10/25 - Version 1.8 - fixing multiple errors in hl, including:
+                option '-' did not work when global option -b was explicitly set,
+                added global option '-u' to match Unicode characters,
+                added global option '--' to explicitly separate global and
+                    highlight options.
+                Highlight.pm version 1.3
+                resetting of bold typeface and background colors could not work,

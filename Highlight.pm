@@ -8,7 +8,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
 
-our $VERSION = "1.2";
+our $VERSION = "1.3";
 
 
 sub new
@@ -77,7 +77,6 @@ sub LoadArgs
                 $lastPatternOmitted = 1;
                 last SWITCH_ARGS;
             }
-            $bold ||= 0;    #make libvte happy (though xterm does not need it to be set explicitly)
             #populate patterns data
             if ( $ignorecase )
             {
@@ -195,29 +194,35 @@ sub InsertTags
                 if ( $tagtype eq "term" )
                 {
                     use integer;
+                    # BEWARE: documentation says that escape sequence 2;
+                    # is not supported everywhere. Setting -ra with escape sequence 2;
+                    # makes wrong foreground color on libvte-based terminals whereas letting
+                    # it be undef may not reset bold typeface in some cases
+                    my $bold = ${ $$position[ 4 ] }->[ 2 ] || 2;
+                    # BEWARE: documentation says that escape sequences 39; and 49;
+                    # are not supported everywhere
+                    my ( $fgcolor, $bgcolor )= ( "39", "49" );
                     #color id in [0..15]
                     if ( ${ $$position[ 4 ] }->[ 1 ] < 16 && ${ $$position[ 4 ] }->[ 3 ] < 16 )
                     {
-                        my $fgcolor = ';3' . ${ $$position[ 4 ] }->[ 1 ] % 8 if defined
-                                        ${ $$position[ 4 ] }->[ 1 ];
-                        my $bgcolor = ${ $$position[ 4 ] }->[ 3 ] % 8 if defined
-                                        ${ $$position[ 4 ] }->[ 3 ];
-                        my $bold = ${ $$position[ 4 ] }->[ 1 ] / 8 if defined
-                                        ${ $$position[ 4 ] }->[ 1 ];
-                        #bold is ever 1 if bgcolor is set (xterm restriction)
-                        $bold = 1 if $bgcolor;
-                        $bold ||= ${ $$position[ 4 ] }->[ 2 ];
-                        $bgcolor = '4' . $bgcolor . ';' if defined $bgcolor;
-                        $colortag = qq/\033[$bgcolor$bold${fgcolor}m/;
+                        $fgcolor = "3" . ${ $$position[ 4 ] }->[ 1 ] % 8 if defined
+                                     ${ $$position[ 4 ] }->[ 1 ];
+                        $bgcolor = "4" . ${ $$position[ 4 ] }->[ 3 ] % 8 if defined
+                                     ${ $$position[ 4 ] }->[ 3 ];
+                        $bold = ${ $$position[ 4 ] }->[ 1 ] / 8 if defined
+                                     ${ $$position[ 4 ] }->[ 1 ];
+                        $bold ||= ${ $$position[ 4 ] }->[ 2 ] || 2;
                     }
                     #color id in [16..255]
                     else
                     {
-                        $colortag = qq/\033[${ $$position[ 4 ] }->[ 2 ];38;5;${ $$position[ 4 ] }->[ 1 ]m/
-                                        if ${ $$position[ 4 ] }->[ 1 ];
-                        $colortag .= qq/\033[48;5;${ $$position[ 4 ] }->[ 3 ]m/
-                                        if ${ $$position[ 4 ] }->[ 3 ];
+                        $fgcolor = "38;5;" . ${ $$position[ 4 ] }->[ 1 ] if defined
+                                     ${ $$position[ 4 ] }->[ 1 ];
+                        $bgcolor = "48;5;" . ${ $$position[ 4 ] }->[ 3 ] if defined
+                                     ${ $$position[ 4 ] }->[ 3 ];
                     }
+                    $bold .= ";" if defined $bold;
+                    $colortag = qq/\033[$bold$fgcolor;${bgcolor}m/;
                     last SWITCH_TAGTYPE;
                 }
                 if ( $tagtype eq "debug" || $tagtype eq "debug-term" )

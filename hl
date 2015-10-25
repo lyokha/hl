@@ -3,7 +3,7 @@
 use Term::Highlight;
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.7.2";
+$VERSION = "1.8";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/\s*snippet\s+(\S+)\s+(.*)/o;
@@ -30,6 +30,7 @@ Global options affect the behaviour of the program globally:
     -b (-bin) enables processing of binary files (not enabled by default).
     -d (-debug) turns on debug support (colors printed out as symbolic
        sequences).
+    -- explicitly separates global and highlight options
     -h (-help) prints this message and exit.
 
 Highlight options apply to the following them patterns:
@@ -172,9 +173,14 @@ while ( my $arg = shift )
             }
             push @Hl_args, @{ $Snippets{ $snippet } }; last SWITCH_ARGS;
         }
+        if ( $arg eq "--" )
+        {
+            $Hl_args = 2; last SWITCH_ARGS;
+        }
         $Hl_args = 1;
     }
-    push @Hl_args, $arg if $Hl_args;
+    push @Hl_args, $arg if $Hl_args == 1;
+    $Hl_args = 1 if $Hl_args == 2;
 }
 
 
@@ -185,8 +191,9 @@ my $hl = Term::Highlight->new( tagtype => $TAGTYPE );
 $hl->LoadArgs( \@Hl_args );
 
 
+my @Files = @ARGV;
 #remove binary files from file list if binary support is not enabled
-my @Files = grep { -T or -d } @ARGV unless $BinarySupport;
+@Files = grep { -T or -d } @Files unless $BinarySupport;
 
 
 #process STDIN or file list line by line
@@ -291,8 +298,10 @@ Patterns are intrinsically perl-compatible regular expressions.
 
 Global options are processed internally by hl whereas highlight options
 are passed into Term::Highlight module, therefore they should not mix.
-The first occurence of an option which are not recognized as global is
-regarded as the beginning of highlight options.
+The first occurrence of an option which are not recognized as global is
+regarded as the beginning of highlight options. Highlight options can be
+explicitly separated from global options with option '--' (must not be confused
+with option '-' that separates list of files from highlight options).
 
 =head3 Global options:
 
@@ -329,6 +338,10 @@ enables processing of binary files (not enabled by default).
 =item -d (-debug)
 
 turns on debug support (colors printed out as symbolic sequences).
+
+=item --
+
+explicitly separates global and highlight options
 
 =item -h (-help)
 
