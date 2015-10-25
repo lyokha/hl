@@ -8,7 +8,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
 
-our $VERSION = "1.3";
+our $VERSION = "1.3.1";
 
 
 sub new
@@ -194,11 +194,7 @@ sub InsertTags
                 if ( $tagtype eq "term" )
                 {
                     use integer;
-                    # BEWARE: documentation says that escape sequence 2;
-                    # is not supported everywhere. Setting -ra with escape sequence 2;
-                    # makes wrong foreground color on libvte-based terminals whereas letting
-                    # it be undef may not reset bold typeface in some cases
-                    my $bold = ${ $$position[ 4 ] }->[ 2 ] || 2;
+                    my $bold = ${ $$position[ 4 ] }->[ 2 ] || 22;
                     # BEWARE: documentation says that escape sequences 39; and 49;
                     # are not supported everywhere
                     my ( $fgcolor, $bgcolor )= ( "39", "49" );
@@ -211,7 +207,7 @@ sub InsertTags
                                      ${ $$position[ 4 ] }->[ 3 ];
                         $bold = ${ $$position[ 4 ] }->[ 1 ] / 8 if defined
                                      ${ $$position[ 4 ] }->[ 1 ];
-                        $bold ||= ${ $$position[ 4 ] }->[ 2 ] || 2;
+                        $bold ||= ${ $$position[ 4 ] }->[ 2 ] || 22;
                     }
                     #color id in [16..255]
                     else
@@ -345,7 +341,7 @@ A. Radkov, E<lt>alexey.radkov@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008 by A. Radkov.
+Copyright (C) 2008-2015 by A. Radkov.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
