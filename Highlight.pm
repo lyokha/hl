@@ -8,7 +8,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
 
-our $VERSION = "1.3.1";
+our $VERSION = "1.3";
 
 
 sub new
