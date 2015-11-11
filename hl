@@ -28,10 +28,12 @@ Global options affect the behaviour of the program globally:
     -l prints the list of files where matches were found, implies '-g'.
     -u (-utf8) enables matching of Unicode characters from UTF-8 encoded input
     -b (-bin) enables processing of binary files (not enabled by default).
-    -d (-debug) turns on debug support (colors printed out as symbolic
+    -t (-term) forces using ANSI color escape sequences even when output
+       is not a terminal, this may be useful when piped to 'less -r' or alike.
+    -d (-debug) turns on debug support (colors are printed out as symbolic
        sequences).
     -- explicitly separates global and highlight options
-    -h (-help) prints this message and exit.
+    -h (-help) prints this message and exits.
 
 Highlight options apply to the following them patterns:
     -x[xx][.b] highlights following patterns with color id x[xx], x[xx] is a
@@ -48,7 +50,7 @@ Highlight options apply to the following them patterns:
     -r resets both background color and bold font.
     -ra resets all settings to default values.
 
-~/.hlrc file can contain lines of format:
+~/.hlrc file must contain lines in format:
         snippet name highlight_options
     where snippet is a keyword, name is the name of the snippet and
     highlight_options is an arbitrary line that contains highlight options
@@ -160,6 +162,10 @@ while ( my $arg = shift )
         if ( $arg eq "-b" || $arg eq "-bin" || $arg eq "--binary" )
         {
             $BinarySupport = 1; last SWITCH_ARGS;
+        }
+        if ( $arg eq "-t" || $arg eq "-term" || $arg eq "--terminal" )
+        {
+            $TAGTYPE = "term"; last SWITCH_ARGS;
         }
         if ( $arg =~ /(?:-s)(\S*)/o )
         {
@@ -335,9 +341,14 @@ For instance matching of '\x{239C}' will not work without this option.
 
 enables processing of binary files (not enabled by default).
 
+=item -t (-term)
+
+forces using ANSI color escape sequences even when output is not a terminal,
+this may be useful when output is piped to 'less -r' or alike.
+
 =item -d (-debug)
 
-turns on debug support (colors printed out as symbolic sequences).
+turns on debug support (colors are printed out as symbolic sequences).
 
 =item --
 
@@ -345,7 +356,7 @@ explicitly separates global and highlight options
 
 =item -h (-help)
 
-prints this message and exit.
+prints usage and exits.
 
 =back
 
