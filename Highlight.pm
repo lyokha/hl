@@ -53,7 +53,7 @@ sub LoadArgs
     {
         SWITCH_ARGS:
         {
-            if ( $arg =~ /^-(.*)/ )
+            if ( $arg =~ /^-(.+)/ )
             {
                 SWITCH_OPTS:
                 {
@@ -66,13 +66,13 @@ sub LoadArgs
                     if ( $1 eq "ra" )   { $fgcolor = undef; $bold = undef; $bgcolor = undef;
                                           last SWITCH_OPTS }
                     if ( $1 eq "b" )    { $bold = 1; last SWITCH_OPTS }
-                    if ( ( my $orig = $1 ) =~ /\d{1,3}(?=\.1)/ )
+                    if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.1)$/ )
                                         { $bgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
                                           last SWITCH_OPTS }
-                    if ( ( my $orig = $1 ) =~ /\d{1,3}(?=\.0)?/ )
+                    if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.0)?$/ )
                                         { $fgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
                                           last SWITCH_OPTS }
-                    print __PACKAGE__, " : Warning: unknown option '-$1'\n";
+                    print __PACKAGE__, " : Warning: unknown option '$arg'\n";
                 }
                 $lastPatternOmitted = 1;
                 last SWITCH_ARGS;

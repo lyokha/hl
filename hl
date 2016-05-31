@@ -14,7 +14,7 @@ sub PrintUsage
 print << "EOHELP"
 $PROGNAME, version $VERSION. See man pages for details.
 
-Usage: $PROGNAME [global-options] [highlight-options [patterns] ...]
+Usage: $PROGNAME [global-options] [[--] highlight-options [patterns] ...]
           [- file1 [file2] ...]
 
 Global options affect the behaviour of the program globally:
@@ -32,7 +32,6 @@ Global options affect the behaviour of the program globally:
        is not a terminal, this may be useful when piped to 'less -r' or alike.
     -d (-debug) turns on debug support (colors are printed out as symbolic
        sequences).
-    -- explicitly separates global and highlight options
     -h (-help) prints this message and exits.
 
 Highlight options apply to the following them patterns:
@@ -49,6 +48,12 @@ Highlight options apply to the following them patterns:
     -rbg resets background color to default value.
     -r resets both background color and bold font.
     -ra resets all settings to default values.
+
+Highlight options separators separate highlight options from other options:
+    -- explicitly separates global and highlight options.
+     - separates global and highlight options from list of files to process.
+
+$PROGNAME may read from stdin that makes using list of input files optional.
 
 ~/.hlrc file must contain lines in format:
         snippet name highlight_options
@@ -199,7 +204,7 @@ $hl->LoadArgs( \@Hl_args );
 
 my @Files = @ARGV;
 #remove binary files from file list if binary support is not enabled
-@Files = grep { -T or -d } @Files unless $BinarySupport;
+@Files = grep { ! -e or ! -r or -T or -d } @Files unless $BinarySupport;
 
 
 #process STDIN or file list line by line
@@ -350,10 +355,6 @@ this may be useful when output is piped to 'less -r' or alike.
 
 turns on debug support (colors are printed out as symbolic sequences).
 
-=item --
-
-explicitly separates global and highlight options
-
 =item -h (-help)
 
 prints usage and exits.
@@ -408,19 +409,27 @@ resets all settings to default values.
 
 =back
 
-=head3 Option '-'
-
-is used to separate list of files to process from global and highlight options.
-This is necessary option when reading from files due to the fact that hl can be
-fed with list of files or from stdin or pipe.
-
-Highlight options apply to following them regexp patterns if any.
-If trailing highlight options are not followed by patterns they apply to whole
-text.
+Highlight options apply to following them regexp patterns ot to the whole text
+if trailing highlight options are not followed by patterns.
 
 It is possible to define common highlight options on session level.
 hl supports environment variable B<HL_INITSTRING> which value will be prepended
 to any highlight options given in command line.
+
+=head3 Highlight options separators
+
+=over
+
+=item --
+
+explicitly separates global and highlight options.
+
+=item -
+
+separates global and highlight options from list of files to process. As soon as
+hl may read from stdin, using a list of files to process is not obligatory.
+
+=back
 
 =head1 ENVIRONMENT VARIABLES
 
