@@ -1,4 +1,4 @@
-Revision history for Perl extension Highlight.
+Revision history for Perl module Term::Highlight and script hl.
 
 
 2006/01/16 - Version 1.0 - first functional version.
@@ -41,4 +41,8 @@ Revision history for Perl extension Highlight.
                 added global option '--' to explicitly separate global and
                     highlight options.
                 Highlight.pm version 1.3
-                resetting of bold typeface and background colors could not work,
+                resetting of bold typeface and background colors could not work
+
+2016/05/31 - Version 1.8.3 - various fixes related mostly to multiple files
+                processing
+

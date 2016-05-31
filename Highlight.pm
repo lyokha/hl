@@ -8,7 +8,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
 
-our $VERSION = "1.3";
+our $VERSION = "1.4";
 
 
 sub new
@@ -72,7 +72,7 @@ sub LoadArgs
                     if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.0)?$/ )
                                         { $fgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
                                           last SWITCH_OPTS }
-                    print __PACKAGE__, " : Warning: unknown option '$arg'\n";
+                    print __PACKAGE__, " : WARNING: unknown option '$arg'\n";
                 }
                 $lastPatternOmitted = 1;
                 last SWITCH_ARGS;
@@ -341,7 +341,7 @@ A. Radkov, E<lt>alexey.radkov@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008-2015 by A. Radkov.
+Copyright (C) 2008-2016 by A. Radkov.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
