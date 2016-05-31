@@ -3,7 +3,7 @@
 use Term::Highlight;
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.8.3";
+$VERSION = "1.8.4";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/\s*snippet\s+(\S+)\s+(.*)/o;

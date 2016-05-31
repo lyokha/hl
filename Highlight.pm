@@ -66,10 +66,10 @@ sub LoadArgs
                     if ( $1 eq "ra" )   { $fgcolor = undef; $bold = undef; $bgcolor = undef;
                                           last SWITCH_OPTS }
                     if ( $1 eq "b" )    { $bold = 1; last SWITCH_OPTS }
-                    if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.1)$/ )
+                    if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.1$)/ )
                                         { $bgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
                                           last SWITCH_OPTS }
-                    if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.0)?$/ )
+                    if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.0$|$)/ )
                                         { $fgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
                                           last SWITCH_OPTS }
                     print __PACKAGE__, " : WARNING: unknown option '$arg'\n";
