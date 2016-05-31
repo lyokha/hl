@@ -326,7 +326,7 @@ hl - terminal patterns highlighter
 
 =head1 SYNOPSIS
 
-hl [global-options] [highlight-options [patterns] ...] [- file1 [file2] ...]
+hl [global-options] [[--] highlight-options [patterns] ...] [- file1 [file2] ...]
 
 =head1 DESCRIPTION
 
