@@ -218,11 +218,23 @@ my @Files = @ARGV;
 #process STDIN or file list line by line
 if ( $GrepRecursively )
 {
-    require File::Find;
-    File::Find->import( qw( find ) );
-    @Files || push @Files, './';
-    find(
-        { wanted => sub
+    my $count = 0;
+    for my $File( @Files )
+    {
+        unless ( -e $File )
+        {
+            warn( "WARNING: File $File does not exist" );
+            ++$count;
+        }
+    }
+    if ( $count == 0 || $count != @Files )
+    {
+        require File::Find;
+        File::Find->import( qw( find ) );
+        @Files || push @Files, './';
+        find
+        (
+            sub
             {
                 my ( $FullFile, $File, $FileIsBinary ) =
                                             ( $File::Find::name, $_, -B $_ );
@@ -230,7 +242,7 @@ if ( $GrepRecursively )
                 return if $FileIsBinary && ! $BinarySupport;
                 unless ( open $FileHandle, "< $File" )
                 {
-                    Flush( STDOUT );
+                    Flush( *STDOUT );
                     warn( "WARNING: Unable to open $File: $!" );
                     next;
                 }
@@ -252,8 +264,10 @@ if ( $GrepRecursively )
                     print "$FullFile: $_";
                 }
                 close $FileHandle;
-            }
-        }, @Files );
+            },
+            @Files
+        );
+    }
 }
 else
 {
@@ -270,20 +284,20 @@ else
         {
             unless ( open $FileHandle, "< $File" )
             {
-                Flush( STDOUT );
+                Flush( *STDOUT );
                 warn( "WARNING: Unable to open $File: $!" );
                 next;
             }
             if ( -d $FileHandle )
             {
-                Flush( STDOUT );
+                Flush( *STDOUT );
                 warn( "WARNING: $File is a directory, ignored" );
                 next;
             }
             $FileIsBinary = -B $FileHandle;
             if ( $FileIsBinary && ! $BinarySupport )
             {
-                Flush( STDOUT );
+                Flush( *STDOUT );
                 warn( "WARNING: $File is a binary file, ignored" );
                 next;
             }
