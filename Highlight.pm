@@ -263,7 +263,7 @@ sub Process
     #replace all but the last ending tags from @Positions by one-before-the-last starting tag
     #(crucial for terminal color escape sequences algorithm)
     RearrangePositionsOfTags( \@Positions, \@{ $self->{ Patterns } } );
-    
+
     #insert tags into current line
     InsertTags( \@Positions, $String_ref, $$self{ tagtype } );
 
