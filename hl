@@ -6,7 +6,7 @@ use Term::Highlight qw( LoadArgs Process );
 $VERSION = "1.8.5";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
-$SNIPPET_PTN = qr/\s*snippet\s+(\S+)\s+(.*)/o;
+$SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/o;
 
 
 sub PrintUsage
@@ -81,7 +81,11 @@ sub LoadSnippets
             next;
         }
         $command .= $_;
-        next unless $command =~ /$SNIPPET_PTN/;
+        unless ( $command =~ /$SNIPPET_PTN/ )
+        {
+            $command = undef;
+            next;
+        }
         my ( $name, $snippet ) = ( $1, $2 );
         my ( $start, $seek ) = ( 0, 0 );
         my $waitquote = 0;
@@ -187,7 +191,8 @@ while ( my $arg = shift )
         {
             LoadSnippets;
             my $snippet = ( $1 eq undef ) ? shift : $1;
-            last SWITCH_ARGS unless exists $Snippets{ $snippet };
+            die "Snippet '$snippet' failed to load"
+                                            unless exists $Snippets{ $snippet };
             if ( $Snippets{ $snippet }[ 0 ] eq '-u' )
             {
                 shift @{ $Snippets{ $snippet } };

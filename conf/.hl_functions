@@ -1,0 +1,51 @@
+alias hlgrep='hl -g'
+
+function quote_args_if_needed
+{
+    local result=''
+    for i in "$@" ; do
+        if [[ -z "$i" || "$i" =~ ' ' ]] ; then
+            result=$result" '"$i"'"
+            continue
+        fi
+        result=$result' '$i
+    done
+    echo $result
+}
+
+function make
+{
+    `env which make` $@ 2>&1 | hl -smake
+}
+
+function ngrep
+{
+    eval sudo `env which ngrep` `quote_args_if_needed "$@"` | hl -sngrep
+}
+
+function diff
+{
+    `env which diff` $@ | hl -sdiff
+}
+
+for vcs in cvs svn hg git ; do
+    eval "function ${vcs}diff
+    {
+        $vcs diff \$@ | hl -sdiff
+    }"
+done
+
+function cgr
+{
+    `env which cgrep` --color --format='#f ⎜ #n ⎜ #l' -r "$@" |
+            sed -e 's/\x1b\[1m\x1b\[94m/@eCHrF@/' \
+                -e 's/\x1b\[1m/@eCHrB@/g' \
+                -e 's/\x1b\[m/@eCHrE@/g' |
+            column -t -s⎜ -o⎜|
+            sed -e 's/@eCHrF@/\x1b\[38;5;150m/' \
+                -e 's/@eCHrB@/\x1b\[38;5;227m/g' \
+                -e 's/@eCHrE@/\x1b\[m/g' \
+                -e 's/\(\s\+\)\([[:digit:]]\+\)\(\s\+\)/\3\2\1/' |
+            hl -u -73 '\h+\d+\h+(?=\x{239C})' -216 '\x{239C}'
+}
+
