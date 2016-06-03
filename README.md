@@ -11,6 +11,7 @@ Table of contents
 -----------------
 
 - [Motivational example](#motivational-example)
+- [Installation](#installation)
 
 Motivational example
 --------------------
@@ -38,4 +39,14 @@ next command *hl* is not fed with specific patterns, therefore all text is
 highlighted with color *46*. Finally, the command *``cat RAVEN_POE | hl 'ing\b'
 'ed\b'``* highlights *gerunds* and *participles* with default color *46* in the
 Poe's masterpiece.
+
+Installation
+------------
+
+```ShellSession
+$ perl Makefile.PL
+$ make
+$ make test
+$ make install
+```
 
