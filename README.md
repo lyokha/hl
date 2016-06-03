@@ -15,7 +15,8 @@ Table of contents
 - [Highlight rules aka snippets](#highlight-rules-aka-snippets)
 - [Integration with shell](#integration-with-shell)
 - [man *hl*](#man-hl)
-- [man *Term::Highlight*](#man-term::highlight)
+- [man *Term::Highlight*](#man-termhighlight)
+- [See also](#see-also)
 
 Motivational example
 --------------------
@@ -211,7 +212,7 @@ contain global options!
 
 ### EXAMPLES
 
-    ls | hl −b −46.1 −21 ’\bw.*?\b’
+    ls | hl −b −46.1 −21 'bw.*?\b'
 
 reads output of **ls** command and highlight words starting with *w*
 with bold blue (color id 21) foreground and green (color id 46)
@@ -253,9 +254,9 @@ $obj->ClearPatterns( );
 $obj->Process( \$string );
 ```
 
-Currently `"term"` and `"term−debug"` tagtypes are supported. If tagtype
-is `"term"` then boundaries of found patterns will be enclosed in
-terminal color escape sequence tags, if tagtype is `"term−debug"` then
+Currently `term` and `term−debug` tagtypes are supported. If tagtype
+is `term` then boundaries of found patterns will be enclosed in
+terminal color escape sequence tags, if tagtype is `term−debug` then
 they will be marked by symbolic sequences.
 
 ### DESCRIPTION
@@ -268,8 +269,8 @@ terminals.
 
 **LoadPatterns**
 
-expects reference to array of references to arrays of structure \[
-`$pattern`, `$fg`, `$bold`, `$bg` \]. Loads patterns to be processed.
+expects reference to array of references to arrays of structure
+``[ $pattern, $fg, $bold, $bg ]``. Loads patterns to be processed.
 
 **ClearPatterns**
 
@@ -278,11 +279,21 @@ clears loaded patterns.
 **LoadArgs**
 
 expects array of references to strings. Loads patterns to be processed.
-This is just a convenient version of `"LoadPatterns"`. Example of array
-to be loaded: \[ "−46", "−25.1", "−i", "\\bw.\*?\\b", "−100" \].
+This is just a convenient version of `LoadPatterns`. Example of array
+to be loaded: ``[ "−46", "−25.1", "−i", "\bw.*?\b", "−100" ]``.
 
 **Process**
 
 expects reference to string. Makes substitution of color tags inside the
 string. Returns count of found matches.
+
+See also
+--------
+
+There are two articles about *hl* in my blog both written in Russian:
+
+1. [*Использование пользовательской подсветки команд в терминале (на примере
+make)*](http://lin-techdet.blogspot.ru/2011/09/make.html).
+2. [*Статистика, diff,
+подсветка*](http://lin-techdet.blogspot.ru/2012/11/diff.html).
 
