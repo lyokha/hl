@@ -457,14 +457,14 @@ resets all settings to default values.
 
 =back
 
-Highlight options apply to following them regexp patterns ot to the whole text
+Highlight options apply to following them regexp patterns or to the whole text
 if trailing highlight options are not followed by patterns.
 
 It is possible to define common highlight options on session level.
 hl supports environment variable B<HL_INITSTRING> which value will be prepended
 to any highlight options given in command line.
 
-=head3 Highlight options separators
+=head3 Highlight options separators:
 
 =over
 
