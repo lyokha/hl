@@ -60,8 +60,8 @@ Highlight rules aka snippets
 
 Typing long highlight options like in the commands from the above example in a
 terminal is boring and error-prone. *Hl* allows reading highlight options from
-file *.hlrc* in the home directory. Examples of such *highlight rules* or
-*snippets* can be found in [conf/.hlrc](conf/.hlrc).
+file *.hlrc* located in the home directory. Examples of such *highlight rules*
+or *snippets* can be found in [conf/.hlrc](conf/.hlrc).
 
 Integration with shell
 ----------------------
@@ -78,7 +78,7 @@ after login to the system, add line
 . $HOME/.hl_functions
 ```
 
-into *``$HOME/.bashrc``*.
+into *\$HOME/.bashrc*.
 
 - grep-like utilities for developers *ack* and *cgrep*
 
