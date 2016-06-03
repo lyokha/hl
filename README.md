@@ -78,7 +78,7 @@ after login to the system, add line
 . $HOME/.hl_functions
 ```
 
-into *&amp;HOME/.bashrc*.
+into *&#36;HOME/.bashrc*.
 
 - grep-like utilities for developers *ack* and *cgrep*
 
