@@ -12,6 +12,7 @@ Table of contents
 
 - [Motivational example](#motivational-example)
 - [Installation](#installation)
+- [Highlight rules aka snippets](#highlight-rules-aka-snippets)
 
 Motivational example
 --------------------
@@ -49,4 +50,12 @@ $ make
 $ make test
 $ make install
 ```
+
+Highlight rules aka snippets
+----------------------------
+
+Typing long highlight options like in the commands from the above example in a
+terminal is boring and error-prone. *Hl* allows reading highlight options from
+file *.hlrc* in the home directory. Examples of such *highlight rules* or
+*snippets* can be found in [conf/.hlrc](conf/.hlrc).
 
