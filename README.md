@@ -159,7 +159,7 @@ options).
 - **-x\[xx\]\[.b\]**
       highlights following patterns with color defined by number *x\[xx\]*.
       *x\[xx\]* is color id corresponding to terminal color escape sequence
-      number and should range within *\[0..255\]*. *b* is 0 or 1, `.0` applies
+      number and should range within *\[0 .. 255\]*. *b* is 0 or 1, `.0` applies
       the color id to foreground, `.1` − to background, `.0` is default value
       and may be omitted. If your terminal does not support 256 colors then
       valid color ids are *\[0 .. 15\]*. *Note*: if your terminal is 256 colors
