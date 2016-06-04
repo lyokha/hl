@@ -368,7 +368,7 @@ with option '-' that separates list of files from highlight options).
 
 =item -s <snippet>
 
-loads a snippet with specified name from ~/.hlrc file.  The white space between
+loads a snippet with specified name from file ~/.hlrc.  The white space between
 '-s' and the name of snippet can be omitted. For example -sW will load snippet
 with name 'W'.
 
@@ -419,9 +419,10 @@ highlights following patterns with color defined by number x[xx].
 x[xx] is color id corresponding to terminal color escape sequence number
 and should range within [0..255]. I<b> is 0 or 1, .0 applies the color id
 to foreground, .1 - to background, .0 is default value and may be omitted.
-If your terminal does not support 256 colors valid color ids are [0..15].
-I<Note>: if your terminal is 256 colors capable better use [16..255] colors!
-To see how many colors your terminal supports use B<tput colors> command.
+If your terminal does not support 256 colors then valid color ids are [0..15].
+I<Note>: if your terminal is 256 colors capable then better use [16..255]
+colors! To see how many colors your terminal supports use command
+B<tput colors> .
 
 =item -i
 

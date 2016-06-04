@@ -125,7 +125,7 @@ options).
 *Global options:*
 
 - **-s &lt;snippet&gt;**
-      loads a snippet with specified name from \~/.hlrc file. The white space
+      loads a snippet with specified name from file \~/.hlrc. The white space
       between `-s` and the name of snippet can be omitted. For example `-sW`
       will load snippet with name `W`.
 
@@ -157,14 +157,14 @@ options).
 *Highligh options:*
 
 - **-x\[xx\]\[.b\]**
-      highlights following patterns with color defined by number x\[xx\].
-      x\[xx\] is color id corresponding to terminal color escape sequence
-      number and should range within \[0..255\]. *b* is 0 or 1, .0 applies the
-      color id to foreground, .1 − to background, .0 is default value and may
-      be omitted. If your terminal does not support 256 colors valid color ids
-      are \[0..15\]. *Note*: if your terminal is 256 colors capable better use
-      \[16..255\] colors! To see how many colors your terminal supports use
-      **tput colors** command.
+      highlights following patterns with color defined by number *x\[xx\]*.
+      *x\[xx\]* is color id corresponding to terminal color escape sequence
+      number and should range within *\[0..255\]*. *b* is 0 or 1, `.0` applies
+      the color id to foreground, `.1` − to background, `.0` is default value
+      and may be omitted. If your terminal does not support 256 colors then
+      valid color ids are *\[0..15\]*. *Note*: if your terminal is 256 colors
+      capable then better use *\[16..255\]* colors! To see how many colors your
+      terminal supports use command **tput colors**.
 
 - **-i**  sets ignorecase search.
 
@@ -188,7 +188,7 @@ Highlight options apply to following them regexp patterns or to the
 whole text if trailing highlight options are not followed by patterns.
 
 It is possible to define common highlight options on session level. hl
-supports environment variable **HL\_INITSTRING** which value will be
+supports environment variable *HL_INITSTRING* which value will be
 prepended to any highlight options given in command line.
 
 *Highlight options separators:*
@@ -205,17 +205,17 @@ prepended to any highlight options given in command line.
 
 defines common highlight options which will be prepended to any
 highlight options given in command line. For example setting
-**HL\_INITSTRING** ="-21 -i" will make hl highlight patterns with blue
+`HL_INITSTRING="-21 -i"` will make hl highlight patterns with blue
 (color id 21) and ignore case of them without explicit definition of
-highlight options in command line. *Note*: **HL\_INITSTRING** must not
+highlight options in command line. *Note*: *HL_INITSTRING* must not
 contain global options!
 
 #### EXAMPLES
 
-    ls | hl -b -46.1 -21 'bw.*?\b'
+    ls | hl -b -46.1 -21 '\bw.*?\b'
 
 reads output of **ls** command and highlight words starting with *w*
-with bold blue (color id 21) foreground and green (color id 46)
+with bold blue (color id *21*) foreground and green (color id *46*)
 background.
 
 #### FILES
