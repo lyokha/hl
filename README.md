@@ -101,13 +101,13 @@ into *&#36;HOME/.bashrc*.
 man hl
 ------
 
-### SYNOPSIS
+#### SYNOPSIS
 
 ```
 hl [global-options] [[--] highlight-options [patterns] ...] [- file1 [file2] ...]
 ```
 
-### DESCRIPTION
+#### DESCRIPTION
 
 hl reads text from list of files or stdin and prints it on the console
 with specified patterns highlighted using terminal color escape
