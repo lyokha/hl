@@ -297,3 +297,7 @@ make)*](http://lin-techdet.blogspot.ru/2011/09/make.html).
 2. [*Статистика, diff,
 подсветка*](http://lin-techdet.blogspot.ru/2012/11/diff.html).
 
+*Hl* at *cpan.org*:
+[*hl*](http://metacpan.org/pod/distribution/Term-Highlight/hl),
+[*Term::Highlight*](http://metacpan.org/pod/Term::Highlight).
+
