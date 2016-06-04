@@ -247,7 +247,7 @@ man Term::Highlight
 
 ```
 use Term::Highlight;
-$obj = Term::Highlight->new( tagtype => \$TAGTYPE );
+$obj = Term::Highlight->new( tagtype => $TAGTYPE );
 $obj->LoadArgs( \@args );
 $obj->LoadPatterns( \@ptns );
 $obj->ClearPatterns( );
