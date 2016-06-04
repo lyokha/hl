@@ -199,7 +199,7 @@ prepended to any highlight options given in command line.
       As soon as hl may read from stdin, using a list of files to process is not
       obligatory.
 
-### ENVIRONMENT VARIABLES
+#### ENVIRONMENT VARIABLES
 
 **HL\_INITSTRING**
 
@@ -210,7 +210,7 @@ highlight options given in command line. For example setting
 highlight options in command line. *Note*: **HL\_INITSTRING** must not
 contain global options!
 
-### EXAMPLES
+#### EXAMPLES
 
     ls | hl -b -46.1 -21 'bw.*?\b'
 
@@ -218,7 +218,7 @@ reads output of **ls** command and highlight words starting with *w*
 with bold blue (color id 21) foreground and green (color id 46)
 background.
 
-### FILES
+#### FILES
 
 **\~/.hlrc**
 
@@ -243,7 +243,7 @@ can be split into multiple lines using backslash.
 man Term::Highlight
 -------------------
 
-### SYNOPSIS
+#### SYNOPSIS
 
 ```
 use Term::Highlight;
@@ -259,13 +259,13 @@ is `term` then boundaries of found patterns will be enclosed in
 terminal color escape sequence tags, if tagtype is `term-debug` then
 they will be marked by symbolic sequences.
 
-### DESCRIPTION
+#### DESCRIPTION
 
 Term::Highlight is perl module aimed to support highlighting of patterns
 on color terminals. It supports 256 color terminals and older 8 color
 terminals.
 
-### EXPORTS
+#### EXPORTS
 
 **LoadPatterns**
 
