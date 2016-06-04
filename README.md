@@ -162,9 +162,9 @@ options).
       number and should range within *\[0..255\]*. *b* is 0 or 1, `.0` applies
       the color id to foreground, `.1` − to background, `.0` is default value
       and may be omitted. If your terminal does not support 256 colors then
-      valid color ids are *\[0..15\]*. *Note*: if your terminal is 256 colors
-      capable then better use *\[16..255\]* colors! To see how many colors your
-      terminal supports use command **tput colors**.
+      valid color ids are *\[0 .. 15\]*. *Note*: if your terminal is 256 colors
+      capable then better use *\[16 .. 255\]* colors! To see for how many colors
+      your terminal has support use command **tput colors**.
 
 - **-i**  sets ignorecase search.
 
@@ -205,8 +205,8 @@ prepended to any highlight options given in command line.
 
 defines common highlight options which will be prepended to any
 highlight options given in command line. For example setting
-`HL_INITSTRING="-21 -i"` will make hl highlight patterns with blue
-(color id 21) and ignore case of them without explicit definition of
+`HL_INITSTRING='-21 -i'` will make hl highlight patterns with blue
+(color id *21*) and ignore cases without explicit definition of
 highlight options in command line. *Note*: *HL_INITSTRING* must not
 contain global options!
 

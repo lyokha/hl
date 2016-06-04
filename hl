@@ -421,7 +421,7 @@ and should range within [0..255]. I<b> is 0 or 1, .0 applies the color id
 to foreground, .1 - to background, .0 is default value and may be omitted.
 If your terminal does not support 256 colors then valid color ids are [0..15].
 I<Note>: if your terminal is 256 colors capable then better use [16..255]
-colors! To see how many colors your terminal supports use command
+colors! To see for how many colors your terminal has support use command
 B<tput colors> .
 
 =item -i
@@ -487,9 +487,9 @@ hl may read from stdin, using a list of files to process is not obligatory.
 =item B<HL_INITSTRING>
 
 defines common highlight options which will be prepended to any highlight
-options given in command line. For example setting B<HL_INITSTRING>="-21 -i"
-will make hl highlight patterns with blue (color id 21) and ignore case of them
-without explicit definition of highlight options in command line.
+options given in command line. For example setting B<HL_INITSTRING>='-21 -i'
+will make hl highlight patterns with blue (color id 21) and ignore cases without
+explicit definition of highlight options in command line.
 I<Note>: B<HL_INITSTRING> must not contain global options!
 
 =back
