@@ -353,7 +353,7 @@ hl [global-options] [[--] highlight-options [patterns] ...] [- file1 [file2] ...
 
 hl reads text from list of files or standard input and prints it on terminal
 with specified patterns highlighted using ANSI color escape sequences.
-Patterns are intrinsically perl-compatible regular expressions.
+Patterns are intrinsically Perl-compatible regular expressions.
 
 Global options are processed internally by hl whereas highlight options
 are passed into Term::Highlight module, therefore they should not mix.

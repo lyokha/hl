@@ -273,7 +273,7 @@ sub Process
 
 =head1 NAME
 
-Term::Highlight - perl module to highlight regexp patterns on terminals
+Term::Highlight - Perl module to highlight regexp patterns on terminals
 
 =head1 SYNOPSIS
 
@@ -300,8 +300,8 @@ will be marked by special symbolic sequences.
 
 =head1 DESCRIPTION
 
-Term::Highlight is perl module aimed to support highlighting of patterns
-on color terminals.
+Term::Highlight is a Perl module aimed to support highlighting of regexp
+patterns on color terminals.
 It supports 256 color terminals a well as older 8 color terminals.
 
 =head1 EXPORTS
@@ -327,7 +327,7 @@ Example of array to be loaded: [ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ].
 
 =item B<Process>
 
-expects a reference to string.
+expects a reference to a string.
 Makes substitution of color tags inside the string.
 Returns count of found matches.
 

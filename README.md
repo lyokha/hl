@@ -2,9 +2,9 @@ hl
 ==
 
 Universal PCRE-based terminal highlighter which is compatible with older 8-color
-and modern 256-color terminals. It consists of a perl module *Term::Highlight*
+and modern 256-color terminals. It consists of a Perl module *Term::Highlight*
 that is capable of inserting *ANSI terminal color escape sequences* at positions
-calculated for specified regular expressions and a perl script *hl* that uses
+calculated for specified regular expressions and a Perl script *hl* that uses
 the module.
 
 Table of contents
@@ -111,7 +111,7 @@ hl [global-options] [[--] highlight-options [patterns] ...] [- file1 [file2] ...
 
 hl reads text from list of files or standard input and prints it on terminal
 with specified patterns highlighted using ANSI color escape sequences.
-Patterns are intrinsically perl-compatible regular expressions.
+Patterns are intrinsically Perl-compatible regular expressions.
 
 Global options are processed internally by hl whereas highlight options
 are passed into Term::Highlight module, therefore they should not mix.
@@ -260,7 +260,7 @@ they will be marked by special symbolic sequences.
 
 #### DESCRIPTION
 
-Term::Highlight is perl module aimed to support highlighting of patterns
+Term::Highlight is a Perl module aimed to support highlighting of patterns
 on color terminals. It supports 256 color terminals as well as older 8 color
 terminals.
 
@@ -283,7 +283,7 @@ to be loaded: ``[ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ]``.
 
 **Process**
 
-expects reference to string. Makes substitution of color tags inside the
+expects a reference to a string. Makes substitution of color tags inside the
 string. Returns count of found matches.
 
 See also
