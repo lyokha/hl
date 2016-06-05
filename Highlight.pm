@@ -295,14 +295,14 @@ Term::Highlight - perl module to highlight regexp patterns on terminals
 
 Currently C<term> and C<term-debug> tagtypes are supported.
 If tagtype is C<term> then boundaries of found patterns will be enclosed in
-terminal color escape sequence tags, if tagtype is C<term-debug> then they
-will be marked by symbolic sequences.
+ANSI terminal color escape sequence tags, if tagtype is C<term-debug> then they
+will be marked by special symbolic sequences.
 
 =head1 DESCRIPTION
 
 Term::Highlight is perl module aimed to support highlighting of patterns
-on color terminals. It supports 256 color terminals and older
-8 color terminals.
+on color terminals.
+It supports 256 color terminals a well as older 8 color terminals.
 
 =head1 EXPORTS
 
@@ -310,24 +310,26 @@ on color terminals. It supports 256 color terminals and older
 
 =item B<LoadPatterns>
 
-expects reference to array of references to arrays of structure
-[ $pattern, $fg, $bold, $bg ]. Loads patterns to be processed.
+expects a reference to an array of references to arrays of type
+[ $pattern, $fg, $bold, $bg ].
+Loads patterns to be processed.
 
 =item B<ClearPatterns>
 
-clears loaded patterns.
+clears the loaded patterns.
 
 =item B<LoadArgs>
 
-expects array of references to strings. Loads patterns to be processed.
+expects an array of references to strings.
+Loads patterns to be processed.
 This is just a convenient version of C<LoadPatterns>.
-Example of array to be loaded:
-[ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ].
+Example of array to be loaded: [ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ].
 
 =item B<Process>
 
-expects reference to string. Makes substitution of color tags inside the
-string. Returns count of found matches.
+expects a reference to string.
+Makes substitution of color tags inside the string.
+Returns count of found matches.
 
 =back
 

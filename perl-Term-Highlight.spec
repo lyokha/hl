@@ -1,26 +1,26 @@
-Name:       perl-Term-Highlight 
-Version:    1.8.5
+Name:       perl-Term-Highlight
+Version:    1.8.6
 Release:    1%{?dist}
-License:    GPL+ or Artistic 
+License:    GPL+ or Artistic
 Group:      Development/Libraries
 Summary:    Simple way to highlight perl-compatible regexp patterns on terminals
-Source:     http://search.cpan.org/CPAN/authors/id/R/RA/RADKOV/Term-Highlight-%{version}.tar.gz 
-Url:        http://hlterm.sourceforge.net
+Source:     http://search.cpan.org/CPAN/authors/id/R/RA/RADKOV/Term-Highlight-%{version}.tar.gz
+Url:        http://github.com/lyokha/hl
 BuildArch:  noarch
-BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n) 
+BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:   perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
-BuildRequires: perl(ExtUtils::MakeMaker) 
+BuildRequires: perl(ExtUtils::MakeMaker)
 
 
 %description
-Term::Highlight is a Perl module which can be used to highlight
-unlimited number of specified patterns with different colors using
-terminal color escape sequences.
+Term::Highlight is a Perl module which can help to highlight
+virtually unlimited number of specified regexp patterns with
+different colors using ANSI terminal color escape sequences.
 Term::Highlight supports 256 and 8 colors capable terminals.
-The package is shipped with full-featured script 'hl' which can also
-be used as grep-like engine. You can use hl just to learn perl
-regular expressions!
+The package ships with full-featured script 'hl' which can also
+be used as a grep-like engine. You can use hl to just learn
+Perl regular expressions!
 
 %prep
 %setup -q -n Term-Highlight-%{version}
@@ -40,7 +40,7 @@ find %{buildroot} -depth -type d -exec rmdir {} 2>/dev/null ';'
 %{_fixperms} %{buildroot}/*
 
 %clean
-rm -rf %{buildroot} 
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Sun Jun 05 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.8.6-1
+- hl version 1.8.6, minor bug fixes and docs updates
+
 * Wed Jun 01 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.8.5-1
 - hl version 1.8.5, much faster start time when recursive grep is not needed
 

@@ -49,3 +49,5 @@ Revision history for Perl module Term::Highlight and script hl.
 2016/06/01 - Version 1.8.5 - much faster start time when recursive grep is not
                 needed
 
+2016/06/05 - Version 1.8.6 - minor bug fixes and docs updates
+

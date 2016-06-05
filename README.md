@@ -109,31 +109,30 @@ hl [global-options] [[--] highlight-options [patterns] ...] [- file1 [file2] ...
 
 #### DESCRIPTION
 
-hl reads text from list of files or stdin and prints it on the console
-with specified patterns highlighted using terminal color escape
-sequences. Patterns are intrinsically perl-compatible regular
-expressions.
+hl reads text from list of files or standard input and prints it on terminal
+with specified patterns highlighted using ANSI color escape sequences.
+Patterns are intrinsically perl-compatible regular expressions.
 
 Global options are processed internally by hl whereas highlight options
 are passed into Term::Highlight module, therefore they should not mix.
-The first occurrence of an option which are not recognized as global is
-regarded as the beginning of highlight options. Highlight options can be
-explicitly separated from global options with option `--` (must not be
-confused with option `-` that separates list of files from highlight
-options).
+The first occurrence of an option which has not been recognized as global is
+regarded as beginning of highlight options.
+Highlight options can be explicitly separated from global options with option
+`--` (must not be confused with option `-` that separates list of files from
+highlight options).
 
 *Global options:*
 
 - **-s &lt;snippet&gt;**
-      loads a snippet with specified name from file \~/.hlrc. The white space
-      between `-s` and the name of snippet can be omitted. For example `-sW`
-      will load snippet with name `W`.
+      loads a snippet with the specified name from file \~/.hlrc. The white
+      space between `-s` and the name of the snippet may be omitted.
+      For example `-sW` will load snippet with name `W`.
 
 - **-g (-grep)**
-      prints only lines which match specified patterns.
+      prints only lines that match specified patterns.
 
-- **-r**  greps recursively, implies `-g`. If file list is empty starts search
-      in current directory.
+- **-r**  greps recursively, implies `-g`. If the file list is empty then grep
+      starts in the current directory.
 
 - **-l**  prints the list of files where matches were found, implies `-g`.
 
@@ -158,13 +157,14 @@ options).
 
 - **-x\[xx\]\[.b\]**
       highlights following patterns with color defined by number *x\[xx\]*.
-      *x\[xx\]* is color id corresponding to terminal color escape sequence
-      number and should range within *\[0 .. 255\]*. *b* is 0 or 1, `.0` applies
-      the color id to foreground, `.1` − to background, `.0` is default value
-      and may be omitted. If your terminal does not support 256 colors then
-      valid color ids are *\[0 .. 15\]*. *Note*: if your terminal is 256 colors
-      capable then better use *\[16 .. 255\]* colors! To see for how many colors
-      your terminal has support use command **tput colors**.
+      *x\[xx\]* is color id corresponding to an ANSI color escape sequence
+      number and thus should range within *\[0 .. 255\]*. *b* must be 0 or 1:
+      `.0` applies the color id to foreground, `.1` − to background. `.0`
+      is default choice and may be omitted. If your terminal does not support
+      256 colors then valid color ids are *\[0 .. 15\]*. *Note*: if your
+      terminal is 256 colors capable then better use *\[16 .. 255\]* colors!
+      To see for how many colors your terminal has support use command **tput
+      colors**.
 
 - **-i**  sets ignorecase search.
 
@@ -196,8 +196,8 @@ prepended to any highlight options given in command line.
 - **--**  explicitly separates global and highlight options.
 
 - **-**   separates global and highlight options from list of files to process.
-      As soon as hl may read from stdin, using a list of files to process is not
-      obligatory.
+      As soon as hl may read from standard input, using a list of files to
+      process is not obligatory.
 
 #### ENVIRONMENT VARIABLES
 
@@ -205,8 +205,8 @@ prepended to any highlight options given in command line.
 
 defines common highlight options which will be prepended to any
 highlight options given in command line. For example setting
-`HL_INITSTRING='-21 -i'` will make hl highlight patterns with blue
-(color id *21*) and ignore cases without explicit definition of
+`HL_INITSTRING='-21 -i'` will make hl highlight patterns with
+color id *21* and ignore cases without explicit definition of
 highlight options in command line. *Note*: *HL_INITSTRING* must not
 contain global options!
 
@@ -214,31 +214,30 @@ contain global options!
 
     ls | hl -b -46.1 -21 '\bw.*?\b'
 
-reads output of **ls** command and highlight words starting with *w*
-with bold blue (color id *21*) foreground and green (color id *46*)
-background.
+reads output of command **ls** and highlights words that start with *w* in
+color id *21* using color id *46* for background and bold font.
 
 #### FILES
 
 **\~/.hlrc**
 
 currently this file may contain only snippets that can be loaded with
-`-s` option. The format of the snippet line is
+option `-s`. The format of the snippet line is
 
     snippet name highlight_options
 
 where *snippet* is a keyword, *name* is the name of the snippet and
 *highlight\_options* contains highlight options possibly preceded by the
 global option `-u`. Here is an example of snippet which can be used to
-highlight words that start with capital letter:
+highlight words that start with a capital letter:
 
     snippet W -130 (?:^|[\s])[A-Z]\S+
 
 Lines that do not match the snippet line pattern are ignored. Arguments
 of highlight\_options are naturally split by whitespaces. If you want to
 have whitespaces inside patterns you can use single quotes surrounding
-them. Single quote itself must be prepended by backslash. Too long lines
-can be split into multiple lines using backslash.
+them. Single quote by itself must be escaped by a backslash. Too long lines
+can be split into multiple lines using backslashes.
 
 man Term::Highlight
 -------------------
@@ -256,29 +255,29 @@ $obj->Process( \$string );
 
 Currently `term` and `term-debug` tagtypes are supported. If tagtype
 is `term` then boundaries of found patterns will be enclosed in
-terminal color escape sequence tags, if tagtype is `term-debug` then
-they will be marked by symbolic sequences.
+ANSI terminal color escape sequence tags, if tagtype is `term-debug` then
+they will be marked by special symbolic sequences.
 
 #### DESCRIPTION
 
 Term::Highlight is perl module aimed to support highlighting of patterns
-on color terminals. It supports 256 color terminals and older 8 color
+on color terminals. It supports 256 color terminals as well as older 8 color
 terminals.
 
 #### EXPORTS
 
 **LoadPatterns**
 
-expects reference to array of references to arrays of structure
+expects a reference to an array of references to arrays of type
 ``[ $pattern, $fg, $bold, $bg ]``. Loads patterns to be processed.
 
 **ClearPatterns**
 
-clears loaded patterns.
+clears the loaded patterns.
 
 **LoadArgs**
 
-expects array of references to strings. Loads patterns to be processed.
+expects an array of references to strings. Loads patterns to be processed.
 This is just a convenient version of `LoadPatterns`. Example of array
 to be loaded: ``[ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ]``.
 
