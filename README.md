@@ -260,9 +260,9 @@ they will be marked by special symbolic sequences.
 
 #### DESCRIPTION
 
-Term::Highlight is a Perl module aimed to support highlighting of patterns
-on color terminals. It supports 256 color terminals as well as older 8 color
-terminals.
+Term::Highlight is a Perl module aimed to support highlighting of regexp
+patterns on color terminals. It supports 256 color terminals as well as older
+8 color terminals.
 
 #### EXPORTS
 
