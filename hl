@@ -264,6 +264,8 @@ if ( exists $ENV{ HL_CTXDELIM } && ! $GrepList && $CheckCtx )
     $hl_ctx->Process( \$CtxDelim );
 }
 
+my $print_ctx = 0;
+
 
 #process STDIN or file list line by line
 if ( $GrepRecursively )
@@ -306,7 +308,6 @@ if ( $GrepRecursively )
                     binmode( STDOUT, ':utf8' ) unless $GrepList;
                 }
                 InitCtxData if $CheckCtx;
-                my $print_ctx = 0;
                 while ( <$FileHandle> )
                 {
                     my $Location = '';
@@ -408,7 +409,6 @@ else
             binmode( STDOUT, ':utf8' ) unless $GrepList;
         }
         InitCtxData if $CheckCtx;
-        my $print_ctx = 0;
         while ( <$FileHandle> )
         {
             my $matches = $hl->Process( \$_ );
