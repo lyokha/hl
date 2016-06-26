@@ -7,6 +7,7 @@ $VERSION = "1.8.7";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/o;
+$CTX_PTN = qr/^(\d+)?\.?(\d+)?$/o;
 
 
 sub PrintUsage
@@ -26,6 +27,9 @@ Global options affect the behaviour of the program globally:
     -r greps recursively, implies '-g'.
        If file list is empty, starts search in current directory.
     -l prints the list of files where matches were found, implies '-g'.
+    -c <pre[.post]> where 'pre' and 'post' are numbers, prints context lines
+       around matches, if 'post' is not set then it is supposed to be equal to
+       'pre', implies '-g'.
     -n prints line numbers.
     -u (-utf8) enables matching of Unicode characters from UTF-8 encoded input
     -b (-bin) enables processing of binary files (not enabled by default).
@@ -130,6 +134,14 @@ sub LoadSnippets
 }
 
 
+sub InitCtxData
+{
+    @CtxPre = ();
+    $CurCtxPost = $CtxPost;
+    $LastLine = 0;
+}
+
+
 sub Flush
 {
     my ( $fh ) = @_;
@@ -183,6 +195,14 @@ while ( my $arg = shift )
         {
             $TAGTYPE = "term"; last SWITCH_ARGS;
         }
+        if ( $arg =~ /(?:-c)(\S*)/o )
+        {
+            my $value = ( $1 eq undef ) ? shift : $1;
+            die "Unrecognized context pattern" unless $value =~ /$CTX_PTN/;
+            $Grep = 1;
+            $CtxPre = $1 || 0;
+            $CtxPost = defined $2 ? $2 : $CtxPre; last SWITCH_ARGS;
+        }
         if ( $arg =~ /(?:-s)(\S*)/o )
         {
             LoadSnippets;
@@ -234,12 +254,22 @@ if ( exists $ENV{ HL_LOCATION } && ! $GrepList &&
     $hl_loc->LoadArgs( [ split '\s+', $ENV{ HL_LOCATION } ] );
 }
 
+my $CheckCtx = $CtxPre || $CtxPost;
+my $CtxDelim = '--';
+
+if ( exists $ENV{ HL_CTXDELIM } && ! $GrepList && $CheckCtx )
+{
+    $hl_ctx = Term::Highlight->new( tagtype => $TAGTYPE );
+    $hl_ctx->LoadArgs( [ split '\s+', $ENV{ HL_CTXDELIM } ] );
+    $hl_ctx->Process( \$CtxDelim );
+}
+
 
 #process STDIN or file list line by line
 if ( $GrepRecursively )
 {
     my $count = 0;
-    for my $File( @Files )
+    for my $File ( @Files )
     {
         unless ( -e $File )
         {
@@ -275,16 +305,59 @@ if ( $GrepRecursively )
                     binmode( $FileHandle, ':utf8' );
                     binmode( STDOUT, ':utf8' ) unless $GrepList;
                 }
+                InitCtxData if $CheckCtx;
+                my $print_ctx = 0;
                 while ( <$FileHandle> )
                 {
-                    next if ! $hl->Process( \$_ );
-                    print "$FullFile\n" if $GrepList && ! $FileIsBinary;
-                    print "Binary file $FullFile matches\n" if $FileIsBinary;
-                    last if $GrepList || $FileIsBinary;
-                    my $Location = $LineNumbers ?
-                                   $FullFile . ':' . $. : $FullFile;
+                    my $Location = '';
+                    if ( $hl->Process( \$_ ) )
+                    {
+                        print "$FullFile\n" if $GrepList && ! $FileIsBinary;
+                        print "Binary file $FullFile matches\n"
+                                                            if $FileIsBinary;
+                        last if $GrepList || $FileIsBinary;
+                        if ( $CheckCtx )
+                        {
+                            my $n = $#CtxPre;
+                            print "$CtxDelim\n"
+                                    if $print_ctx++ && $. > $LastLine + $n + 2;
+                            for my $i ( 0 .. $n )
+                            {
+                                $Location = $LineNumbers ?
+                                   $FullFile . ':' . ( $. - ( $n + 1 - $i ) ) :
+                                   $FullFile;
+                                $hl_loc->Process( \$Location )
+                                                            if defined $hl_loc;
+                                print "$Location: $CtxPre[ $i ]";
+                            }
+                            @CtxPre = () if $CtxPre > 0;
+                            $CurCtxPost = 0;
+                        }
+                    }
+                    elsif ( $CheckCtx )
+                    {
+                        if ( $CurCtxPost < $CtxPost )
+                        {
+                            ++$CurCtxPost;
+                        }
+                        else
+                        {
+                            if ( $CtxPre > 0 )
+                            {
+                                push @CtxPre, $_;
+                                shift @CtxPre if @CtxPre > $CtxPre;
+                            }
+                            next;
+                        }
+                    }
+                    else
+                    {
+                        next;
+                    }
+                    $Location = $LineNumbers ? $FullFile . ':' . $. : $FullFile;
                     $hl_loc->Process( \$Location ) if defined $hl_loc;
                     print "$Location: $_";
+                    $LastLine = $.;
                 }
                 close $FileHandle;
             },
@@ -296,7 +369,7 @@ else
 {
     @Files || push @Files, *STDIN;
     my $Location = '';
-    for my $File( @Files )
+    for my $File ( @Files )
     {
         my ( $FileHandle, $FileIsBinary );
         if ( $File eq *STDIN )
@@ -334,10 +407,11 @@ else
             binmode( $FileHandle, ':utf8' );
             binmode( STDOUT, ':utf8' ) unless $GrepList;
         }
+        InitCtxData if $CheckCtx;
+        my $print_ctx = 0;
         while ( <$FileHandle> )
         {
             my $matches = $hl->Process( \$_ );
-            next if ! $matches && $Grep;
             #debug purpose
             #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
             #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );
@@ -349,6 +423,49 @@ else
                 last if $print_once;
             }
             next if $print_once;
+            if ( $Grep )
+            {
+                if ( $matches )
+                {
+                    if ( $CheckCtx )
+                    {
+                        my $n = $#CtxPre;
+                        print "$CtxDelim\n"
+                                if $print_ctx++ && $. > $LastLine + $n + 2;
+                        for my $i ( 0 .. $n )
+                        {
+                            my $Line = $. - ( $n + 1 - $i );
+                            $Location = $ManyFiles ?
+                               ( $LineNumbers ? $File . ':' . $Line : $File ) :
+                               $Line;
+                            $hl_loc->Process( \$Location ) if defined $hl_loc;
+                            print "$Location: $CtxPre[ $i ]";
+                        }
+                        @CtxPre = () if $CtxPre > 0;
+                        $CurCtxPost = 0;
+                    }
+                }
+                elsif ( $CheckCtx )
+                {
+                    if ( $CurCtxPost < $CtxPost )
+                    {
+                        ++$CurCtxPost;
+                    }
+                    else
+                    {
+                        if ( $CtxPre > 0 )
+                        {
+                            push @CtxPre, $_;
+                            shift @CtxPre if @CtxPre > $CtxPre;
+                        }
+                        next;
+                    }
+                }
+                else
+                {
+                    next;
+                }
+            }
             #print current line
             if ( $ManyFiles || $LineNumbers )
             {
@@ -358,6 +475,7 @@ else
                 $Location .= ': ';
             }
             print $Location, $_;
+            $LastLine = $.;
         }
         close $FileHandle;
     }
@@ -527,8 +645,15 @@ I<Note>: B<HL_INITSTRING> must not contain global options!
 =item B<HL_LOCATION>
 
 defines highlight options for file names and line numbers when they are printed.
-For example setting B<HL_LOCATION>='-224 \d+$ -248' will make hl print file
-names with color id 248 and line numbers with color id 224.
+For example setting B<HL_LOCATION>='-224 (?<=:)\d+$ -248' will make hl print
+file names with color id 248 and line numbers with color id 224.
+
+=item B<HL_CTXDELIM>
+
+defines highlight options for context chunks delimiters (double dashes) when
+they are printed.
+For example setting B<HL_CTXDELIM>='-248' will make hl print context chunks
+delimiters with color id 248.
 
 =back
 
