@@ -136,6 +136,8 @@ highlight options).
 
 - **-l**  prints the list of files where matches were found, implies `-g`.
 
+- **-n**  prints line numbers.
+
 - **-u (-utf8)**
       enables matching of Unicode characters from UTF−8 encoded input. For
       instance matching of `\x{239C}` will not work without this option.
@@ -209,6 +211,12 @@ highlight options given in command line. For example setting
 color id *21* and ignore cases without explicit definition of
 highlight options in command line. *Note*: *HL_INITSTRING* must not
 contain global options!
+
+**HL\_LOCATION**
+
+defines highlight options for file names and line numbers when they
+are printed. For example setting `HL_LOCATION='-224 \d+$ -248'` will make
+hl print file names with color id *248* and line numbers with color id *224*.
 
 #### EXAMPLES
 

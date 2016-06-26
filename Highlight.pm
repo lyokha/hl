@@ -8,7 +8,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
 
-our $VERSION = "1.4";
+our $VERSION = "1.5";
 
 
 sub new
@@ -115,21 +115,24 @@ sub FindPositionsOfTags
     my $result = 0;
     for ( my $i = 0; $i < @$patterns; ++$i )
     {
-        unless ( defined $$patterns[ $i ][ 0 ] )
-        {
-            my $length = length $$string_ref;
-            push @$positions, ( [ 0, $length, 1, $i, \$$patterns[ $i ] ],
-                                [ $length, $length, 0, $i, \$$patterns[ $i ] ] );
-            ++$result;
-        }
-        else
+        if ( defined $$patterns[ $i ][ 0 ] )
         {
             while ( $$string_ref =~ /$$patterns[ $i ][ 0 ]/g )
             {
-                push @$positions, ( [ $-[ 0 ], $+[ 0 ] - $-[ 0 ], 1, $i, \$$patterns[ $i ] ],
-                                    [ $+[ 0 ], $+[ 0 ] - $-[ 0 ], 0, $i, \$$patterns[ $i ] ] );
+                my $length = $+[ 0 ] - $-[ 0 ];
+                next if $length == 0;
+                push @$positions, ( [ $-[ 0 ], $length, 1, $i, \$$patterns[ $i ] ],
+                                    [ $+[ 0 ], $length, 0, $i, \$$patterns[ $i ] ] );
                 ++$result;
             }
+        }
+        else
+        {
+            my $length = length $$string_ref;
+            next if $length == 0;
+            push @$positions, ( [ 0, $length, 1, $i, \$$patterns[ $i ] ],
+                                [ $length, $length, 0, $i, \$$patterns[ $i ] ] );
+            ++$result;
         }
     }
     $result;
