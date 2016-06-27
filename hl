@@ -259,7 +259,7 @@ my $CtxDelim = '--';
 
 if ( exists $ENV{ HL_CTXDELIM } && ! $GrepList && $CheckCtx )
 {
-    $hl_ctx = Term::Highlight->new( tagtype => $TAGTYPE );
+    my $hl_ctx = Term::Highlight->new( tagtype => $TAGTYPE );
     $hl_ctx->LoadArgs( [ split '\s+', $ENV{ HL_CTXDELIM } ] );
     $hl_ctx->Process( \$CtxDelim );
 }
