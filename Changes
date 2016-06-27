@@ -56,3 +56,6 @@ Revision history for Perl module Term::Highlight and script hl.
                     an environment variable HL_LOCATION.
                 Highlight.pm version 1.5 - ignore zero-length matches.
 
+2016/06/27 - Version 1.8.8 - added option '-c' to print context lines around
+                matches.
+

@@ -136,6 +136,11 @@ highlight options).
 
 - **-l**  prints the list of files where matches were found, implies `-g`.
 
+- **-c &lt;pre[.post]&gt;**
+      where *pre* and *post* are numbers. Prints context lines around matches.
+      If *post* is not set then it is supposed to be equal to *pre*,
+      implies `-g`.
+
 - **-n**  prints line numbers.
 
 - **-u (-utf8)**
@@ -215,8 +220,14 @@ contain global options!
 **HL\_LOCATION**
 
 defines highlight options for file names and line numbers when they
-are printed. For example setting `HL_LOCATION='-224 \d+$ -248'` will make
+are printed. For example setting `HL_LOCATION='-224 (?<=:)\d+$ -248'` will make
 hl print file names with color id *248* and line numbers with color id *224*.
+
+**HL\_CTXDELIM**
+
+defines highlight options for context chunks delimiters (double dashes) when
+they are printed. For example setting `HL_CTXDELIM=-248` will make hl print
+context chunks delimiters with color id *248*.
 
 #### EXAMPLES
 

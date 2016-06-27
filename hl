@@ -3,7 +3,7 @@
 use Term::Highlight qw( LoadArgs Process );
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.8.7";
+$VERSION = "1.8.8";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/o;
@@ -528,6 +528,12 @@ If the file list is empty then grep starts in the current directory.
 
 prints the list of files where matches were found, implies '-g'.
 
+=item -c <pre[.post]>
+
+where 'pre' and 'post' are numbers.
+Prints context lines around matches.
+If 'post' is not set then it is supposed to be equal to 'pre', implies '-g'.
+
 =item -n
 
 prints line numbers.
@@ -652,7 +658,7 @@ file names with color id 248 and line numbers with color id 224.
 
 defines highlight options for context chunks delimiters (double dashes) when
 they are printed.
-For example setting B<HL_CTXDELIM>='-248' will make hl print context chunks
+For example setting B<HL_CTXDELIM>=-248 will make hl print context chunks
 delimiters with color id 248.
 
 =back
