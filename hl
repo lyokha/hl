@@ -138,7 +138,7 @@ sub InitCtxData
 {
     @CtxPre = ();
     $CurCtxPost = $CtxPost;
-    $LastLine = 0;
+    $LastLine = -1;
 }
 
 
