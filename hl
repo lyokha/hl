@@ -134,14 +134,6 @@ sub LoadSnippets
 }
 
 
-sub InitCtxData
-{
-    @CtxPre = ();
-    $CurCtxPost = $CtxPost;
-    $LastLine = -1;
-}
-
-
 sub Flush
 {
     my ( $fh ) = @_;
@@ -264,7 +256,49 @@ if ( exists $ENV{ HL_CTXDELIM } && ! $GrepList && $CheckCtx )
     $hl_ctx->Process( \$CtxDelim );
 }
 
+my $Location = '';
 my $print_ctx = 0;
+
+
+sub InitCtx
+{
+    @CtxPre = ();
+    $CurCtxPost = $CtxPost;
+    $LastLine = -1;
+}
+
+
+sub ProcessCtx
+{
+    my ( $matches, $print_ctx, $file, $grep_rec ) = @_;
+    if ( $matches )
+    {
+        my $n = $#CtxPre;
+        print "$CtxDelim\n" if $$print_ctx++ && $. > $LastLine + $n + 2;
+        for my $i ( 0 .. $n )
+        {
+            my $line = $. - ( $n + 1 - $i );
+            $Location = $LineNumbers ? $file . ':' . $line : $file;
+            $Location = $ManyFiles ? $Location : $line unless $grep_rec;
+            $hl_loc->Process( \$Location ) if defined $hl_loc;
+            print "$Location: $CtxPre[ $i ]";
+        }
+        @CtxPre = () if $CtxPre > 0;
+        $CurCtxPost = 0;
+        return 1;
+    }
+    if ( $CurCtxPost < $CtxPost )
+    {
+        ++$CurCtxPost;
+        return 1;
+    }
+    if ( $CtxPre > 0 )
+    {
+        push @CtxPre, $_;
+        shift @CtxPre if @CtxPre > $CtxPre;
+    }
+    0;
+}
 
 
 #process STDIN or file list line by line
@@ -307,54 +341,22 @@ if ( $GrepRecursively )
                     binmode( $FileHandle, ':utf8' );
                     binmode( STDOUT, ':utf8' ) unless $GrepList;
                 }
-                InitCtxData if $CheckCtx;
+                InitCtx if $CheckCtx;
                 while ( <$FileHandle> )
                 {
-                    my $Location = '';
-                    if ( $hl->Process( \$_ ) )
+                    my $matches = $hl->Process( \$_ );
+                    my $print_once = $GrepList || $FileIsBinary;
+                    if ( $matches )
                     {
                         print "$FullFile\n" if $GrepList && ! $FileIsBinary;
                         print "Binary file $FullFile matches\n"
                                                             if $FileIsBinary;
-                        last if $GrepList || $FileIsBinary;
-                        if ( $CheckCtx )
-                        {
-                            my $n = $#CtxPre;
-                            print "$CtxDelim\n"
-                                    if $print_ctx++ && $. > $LastLine + $n + 2;
-                            for my $i ( 0 .. $n )
-                            {
-                                $Location = $LineNumbers ?
-                                   $FullFile . ':' . ( $. - ( $n + 1 - $i ) ) :
-                                   $FullFile;
-                                $hl_loc->Process( \$Location )
-                                                            if defined $hl_loc;
-                                print "$Location: $CtxPre[ $i ]";
-                            }
-                            @CtxPre = () if $CtxPre > 0;
-                            $CurCtxPost = 0;
-                        }
+                        last if $print_once;
                     }
-                    elsif ( $CheckCtx )
-                    {
-                        if ( $CurCtxPost < $CtxPost )
-                        {
-                            ++$CurCtxPost;
-                        }
-                        else
-                        {
-                            if ( $CtxPre > 0 )
-                            {
-                                push @CtxPre, $_;
-                                shift @CtxPre if @CtxPre > $CtxPre;
-                            }
-                            next;
-                        }
-                    }
-                    else
-                    {
-                        next;
-                    }
+                    next if $print_once;
+                    next if $CheckCtx &&
+                        ! ProcessCtx( $matches, \$print_ctx, $FullFile, 1 ) ||
+                        ! $CheckCtx && ! $matches;
                     $Location = $LineNumbers ? $FullFile . ':' . $. : $FullFile;
                     $hl_loc->Process( \$Location ) if defined $hl_loc;
                     print "$Location: $_";
@@ -369,7 +371,6 @@ if ( $GrepRecursively )
 else
 {
     @Files || push @Files, *STDIN;
-    my $Location = '';
     for my $File ( @Files )
     {
         my ( $FileHandle, $FileIsBinary );
@@ -408,7 +409,7 @@ else
             binmode( $FileHandle, ':utf8' );
             binmode( STDOUT, ':utf8' ) unless $GrepList;
         }
-        InitCtxData if $CheckCtx;
+        InitCtx if $CheckCtx;
         while ( <$FileHandle> )
         {
             my $matches = $hl->Process( \$_ );
@@ -423,49 +424,9 @@ else
                 last if $print_once;
             }
             next if $print_once;
-            if ( $Grep )
-            {
-                if ( $matches )
-                {
-                    if ( $CheckCtx )
-                    {
-                        my $n = $#CtxPre;
-                        print "$CtxDelim\n"
-                                if $print_ctx++ && $. > $LastLine + $n + 2;
-                        for my $i ( 0 .. $n )
-                        {
-                            my $Line = $. - ( $n + 1 - $i );
-                            $Location = $ManyFiles ?
-                               ( $LineNumbers ? $File . ':' . $Line : $File ) :
-                               $Line;
-                            $hl_loc->Process( \$Location ) if defined $hl_loc;
-                            print "$Location: $CtxPre[ $i ]";
-                        }
-                        @CtxPre = () if $CtxPre > 0;
-                        $CurCtxPost = 0;
-                    }
-                }
-                elsif ( $CheckCtx )
-                {
-                    if ( $CurCtxPost < $CtxPost )
-                    {
-                        ++$CurCtxPost;
-                    }
-                    else
-                    {
-                        if ( $CtxPre > 0 )
-                        {
-                            push @CtxPre, $_;
-                            shift @CtxPre if @CtxPre > $CtxPre;
-                        }
-                        next;
-                    }
-                }
-                else
-                {
-                    next;
-                }
-            }
+            next if $Grep && ( $CheckCtx &&
+                ! ProcessCtx( $matches, \$print_ctx, $File ) ||
+                ! $CheckCtx && ! $matches );
             #print current line
             if ( $ManyFiles || $LineNumbers )
             {
