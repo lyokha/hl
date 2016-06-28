@@ -278,10 +278,19 @@ sub ProcessCtx
         for my $i ( 0 .. $n )
         {
             my $line = $. - ( $n + 1 - $i );
-            $Location = $LineNumbers ? $file . ':' . $line : $file;
-            $Location = $ManyFiles ? $Location : $line unless $grep_rec;
+            if ( $grep_rec )
+            {
+                $Location = $LineNumbers ? $file . ':' . $line : $file;
+            }
+            else
+            {
+                $Location = $ManyFiles ?
+                    ( $LineNumbers ? $file . ':' . $line : $file ) :
+                    ( $LineNumbers ? $line : '' );
+            }
             $hl_loc->Process( \$Location ) if defined $hl_loc;
-            print "$Location: $CtxPre[ $i ]";
+            $Location .= ': ' if $Location ne '';
+            print $Location, $CtxPre[ $i ];
         }
         @CtxPre = () if $CtxPre > 0;
         $CurCtxPost = 0;
