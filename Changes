@@ -59,3 +59,5 @@ Revision history for Perl module Term::Highlight and script hl.
 2016/06/27 - Version 1.8.8 - added option '-c' to print context lines around
                 matches.
 
+2016/06/28 - Version 1.8.9 - fixes in context lines processing
+

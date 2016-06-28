@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    1.8.8
+Version:    1.8.9
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Tue Jun 28 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.8.9-1
+- hl version 1.8.9, fixes in context lines processing
+
 * Mon Jun 27 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.8.8-1
 - hl version 1.8.8, added option -c to print context lines around matches
 

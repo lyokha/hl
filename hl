@@ -3,7 +3,7 @@
 use Term::Highlight qw( LoadArgs Process );
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.8.8";
+$VERSION = "1.8.9";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/o;
@@ -159,10 +159,6 @@ while ( my $arg = shift )
     SWITCH_ARGS :
     {
         last SWITCH_ARGS if $Hl_args;
-        if ( $arg eq "-g" || $arg eq "-grep" || $arg eq "--grep" )
-        {
-            $Grep = 1; last SWITCH_ARGS;
-        }
         if ( $arg eq "-r" )
         {
             $Grep = 1; $GrepRecursively = 1; last SWITCH_ARGS;
@@ -174,6 +170,10 @@ while ( my $arg = shift )
         if ( $arg eq "-n" )
         {
             $LineNumbers = 1; last SWITCH_ARGS;
+        }
+        if ( $arg eq "-g" || $arg eq "-grep" || $arg eq "--grep" )
+        {
+            $Grep = 1; last SWITCH_ARGS;
         }
         if ( $arg eq "-u" || $arg eq "-utf8" || $arg eq "--utf8" )
         {
