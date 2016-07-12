@@ -108,7 +108,7 @@ Grep-like functionality
   <img src="../images/images/HLGREP.png?raw=true" alt="hlgrep"/>
 </p>
 
-(*hlgrep* is a function from *.hl_functions*)
+(*hlgrep* is a shell function from *.hl_functions*)
 
 man hl
 ------
