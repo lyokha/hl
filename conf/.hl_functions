@@ -1,5 +1,3 @@
-alias hlgrep='hl -g'
-
 function quote_args_if_needed
 {
     local result=''
@@ -37,15 +35,23 @@ done
 
 function cgr
 {
-    `env which cgrep` --color --format='#f ⎜ #n ⎜ #l' -r "$@" |
-            sed -e 's/\x1b\[1m\x1b\[94m/@eCHrF@/' \
-                -e 's/\x1b\[1m/@eCHrB@/g' \
-                -e 's/\x1b\[m/@eCHrE@/g' |
-            column -t -s⎜ -o⎜|
-            sed -e 's/@eCHrF@/\x1b\[38;5;150m/' \
-                -e 's/@eCHrB@/\x1b\[38;5;227m/g' \
-                -e 's/@eCHrE@/\x1b\[m/g' \
+    `env which cgrep` --color --format='#f ⎜ #n ⎜ #l' --no-column -r "$@" |
+            column -t -s⎜ -o⎜ |
+            sed -e 's/\x1b\[1;94m/\x1b\[38;5;150m/' \
+                -e 's/\x1b\[1m/\x1b\[38;5;227m/g' \
                 -e 's/\(\s\+\)\([[:digit:]]\+\)\(\s\+\)/\3\2\1/' |
             hl -u -73 '\h+\d+\h+(?=\x{239C})' -216 '\x{239C}'
+}
+
+function hlgrep
+{
+    `env which hl` -t -g -n "$@" |
+        sed 's/:\(\x1b\[22;38;5;224;49m\)\([[:digit:]]\+\)'`
+           `'\(\x1b\[22;38;5;248;49m\)\(\x1b\[0m\): / ⎜ \1\2\1\3 ⎜ /' |
+        column -t -s⎜ -o⎜ |
+        sed 's/\(\s\+\)\(\(\x1b\[22;38;5;224;49m\)[[:digit:]]\+\3'`
+              `'\x1b\[22;38;5;248;49m\)\(\s\+\)'`
+            `'/\4\2\1/' |
+        hl -u -216 '\x{239C}'
 }
 
