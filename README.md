@@ -157,7 +157,8 @@ highlight options).
 
 - **-u (-utf8)**
       enables matching of Unicode characters from UTF−8 encoded input. For
-      instance matching of `\x{239C}` will not work without this option.
+      instance matching against `\x{239C}` or `функци[яи]` will not work without
+      this option.
 
 - **-b (-bin)**
       enables processing of binary files (not enabled by default).

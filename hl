@@ -232,6 +232,12 @@ while ( my $arg = shift )
 my $hl = Term::Highlight->new( tagtype => $TAGTYPE );
 
 #process command line arguments
+if ( $UTF8Support )
+{
+    require Encode;
+    Encode->import( qw( decode_utf8 ) );
+    @Hl_args = map { decode_utf8( $_, 1 ) } @Hl_args;
+}
 $hl->LoadArgs( \@Hl_args );
 
 my @Files = @ARGV;
@@ -453,6 +459,8 @@ else
 
 
 
+=encoding utf-8
+
 =head1 NAME
 
 hl - terminal patterns highlighter
@@ -511,7 +519,8 @@ prints line numbers.
 =item -u (-utf8)
 
 enables matching of Unicode characters from UTF-8 encoded input.
-For instance matching of '\x{239C}' will not work without this option.
+For instance matching against '\x{239C}' or 'функци[яи]' will not work without
+this option.
 
 =item -b (-bin)
 
