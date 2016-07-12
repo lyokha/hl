@@ -14,6 +14,7 @@ Table of contents
 - [Installation](#installation)
 - [Highlight rules aka snippets](#highlight-rules-aka-snippets)
 - [Integration with shell](#integration-with-shell)
+- [Grep-like functionality](#grep-like-functionality)
 - [man *hl*](#man-hl)
 - [man *Term::Highlight*](#man-termhighlight)
 - [See also](#see-also)
@@ -97,6 +98,17 @@ into *&#36;HOME/.bashrc*.
 <p align="center">
   <img src="../images/images/NGREP.png?raw=true" alt="ngrep"/>
 </p>
+
+Grep-like functionality
+-----------------------
+
+*hl* can be used as an easy *grep-like* utility. Below is an example.
+
+<p align="center">
+  <img src="../images/images/HLGREP.png?raw=true" alt="hlgrep"/>
+</p>
+
+(*hlgrep* is a function from *.hl_functions*)
 
 man hl
 ------
