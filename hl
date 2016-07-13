@@ -19,13 +19,13 @@ Usage: $PROGNAME [global-options] [[--] highlight-options [patterns] ...]
           [- file1 [file2] ...]
 
 Global options affect the behaviour of the program globally:
-    -s <snippet> loads a snippet with specified name from ~/.hlrc file.
-       The white space between '-s' and the name of snippet can be omitted.
-       For example -sW will load snippet with name 'W'. It is possible to use
-       more than one -s options with different snippet names.
-    -g (-grep) prints only lines which include patterns.
+    -s <snippet> loads a snippet with specified name from file ~/.hlrc or
+       ~/.hlrc_<snippet>. The white space between '-s' and the name of the
+       snippet can be omitted. For example -sW loads a snippet with name 'W'.
+       Multiple options -s with different snippet names are allowed.
+    -g (-grep) prints only lines that include patterns.
     -r greps recursively, implies '-g'.
-       If file list is empty, starts search in current directory.
+       If the file list is empty then grep starts in the current directory.
     -l prints the list of files where matches were found, implies '-g'.
     -c <pre[.post]> where 'pre' and 'post' are numbers, prints context lines
        around matches, if 'post' is not set then it is supposed to be equal to
@@ -60,23 +60,37 @@ Highlight options separators separate highlight options from other options:
 
 $PROGNAME may read from stdin that makes using list of input files optional.
 
-~/.hlrc file must contain lines in format:
+Files ~/.hlrc and ~/.hlrc_<snippet> must contain lines in format:
         snippet name highlight_options
     where snippet is a keyword, name is the name of the snippet and
     highlight_options is an arbitrary line that contains highlight options
     possibly preceded by the global option '-u'. Arguments within
-    highlight_options are split by whitespaces, if you want to use whitespaces
-    inside patterns you can use single quotes. Single quote itself must be
-    prepended by backslash. Too long lines can be split into multiple lines
-    using backslash.
+    highlight_options are split by white spaces. If you want to use white
+    spaces inside patterns then put single quotes around the patterns. Single
+    quote by itself must be escaped by a backslash. Too long lines can be split
+    into multiple lines using backslashes.
 EOHELP
 }
 
 
 sub LoadSnippets
 {
-    return if $rcLoaded;
-    open ( RC, "< $RC_FILE" ) or return;
+    my ( $snippet ) = @_;
+    return if exists $rcLoaded{ $snippet } && defined $rcLoaded;
+    my $RC_FILE_S = $RC_FILE . '_' . $snippet;
+    if ( exists $rcLoaded{ $snippet } || open ( RC, "< $RC_FILE_S" ) )
+    {
+        $rcLoaded{ $snippet } = 1;
+    }
+    elsif ( open ( RC, "< $RC_FILE" ) )
+    {
+        $rcLoaded{ $snippet } = 0;
+        $rcLoaded = 1;
+    }
+    else
+    {
+        $rcLoaded = 0;
+    }
     my $command;
     while ( <RC> )
     {
@@ -130,7 +144,6 @@ sub LoadSnippets
         $command = undef;
     }
     close ( RC );
-    $rcLoaded = 1;
 }
 
 
@@ -197,8 +210,8 @@ while ( my $arg = shift )
         }
         if ( $arg =~ /(?:-s)(\S*)/o )
         {
-            LoadSnippets;
             my $snippet = ( $1 eq undef ) ? shift : $1;
+            LoadSnippets( $snippet ) unless exists $Snippets{ $snippet };
             die "Snippet '$snippet' failed to load"
                                             unless exists $Snippets{ $snippet };
             if ( $Snippets{ $snippet }[ 0 ] eq '-u' )
@@ -489,9 +502,10 @@ highlight options).
 
 =item -s <snippet>
 
-loads a snippet with the specified name from file ~/.hlrc.
-The white space between '-s' and the name of snippet may be omitted.
-For example -sW will load snippet with name 'W'.
+loads a snippet with specified name from file ~/.hlrc or ~/.hlrc_<snippet>.
+The white space between '-s' and the name of the snippet may be omitted.
+For example -sW loads a  snippet with name 'W'.
+Multiple options -s with different snippet names are allowed.
 
 =item -g (-grep)
 
@@ -651,9 +665,9 @@ color id 21 using color id 46 for background and bold font.
 
 =head1 FILES
 
-B<~/.hlrc>
+B<~/.hlrc> and B<~/.hlrc_<snippet-nameE<gt>>
 
-currently this file may contain only snippets that can be loaded with option
+currently these files may contain only snippets that can be loaded with option
 '-s'.
 The format of the snippet line is
 
@@ -668,11 +682,15 @@ with a capital letter:
 B<snippet W       -130 (?:^|[\s])[A-Z]\S+>
 
 Lines that do not match the snippet line pattern are ignored.
-Arguments of highlight_options are naturally split by whitespaces.
-If you want to have whitespaces inside patterns you can use single quotes
-surrounding them.
+Arguments of highlight_options are naturally split by white spaces.
+If you want to use white spaces inside patterns then put single quotes around
+the patterns.
 Single quote by itself must be escaped by a backslash.
 Too long lines can be split into multiple lines using backslashes.
+
+Files with names containing specific snippet names are loaded before ~/.hlrc:
+they are supposed to declare a single snippet (perhaps with a few auxiliary
+snippets) to help hl load faster.
 
 =head1 SEE ALSO
 

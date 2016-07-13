@@ -136,9 +136,10 @@ highlight options).
 *Global options:*
 
 - **-s &lt;snippet&gt;**
-      loads a snippet with the specified name from file \~/.hlrc. The white
-      space between `-s` and the name of the snippet may be omitted.
-      For example `-sW` will load snippet with name `W`.
+      loads a snippet with specified name from file *\~/.hlrc* or
+      *\~/.hlrc_<snippet>*. The white space between `-s` and the name of the
+      snippet may be omitted. For example `-sW` loads snippet with name `W`.
+      Multiple options `-s` with different snippet names are allowed.
 
 - **-g (-grep)**
       prints only lines that match specified patterns.
@@ -251,9 +252,9 @@ color id *21* using color id *46* for background and bold font.
 
 #### FILES
 
-**\~/.hlrc**
+**\~/.hlrc** and **\~/.hlrc_<snippet-name>**
 
-currently this file may contain only snippets that can be loaded with
+currently these files may contain only snippets that can be loaded with
 option `-s`. The format of the snippet line is
 
     snippet name highlight_options
@@ -266,10 +267,14 @@ highlight words that start with a capital letter:
     snippet W -130 (?:^|[\s])[A-Z]\S+
 
 Lines that do not match the snippet line pattern are ignored. Arguments
-of highlight\_options are naturally split by whitespaces. If you want to
-have whitespaces inside patterns you can use single quotes surrounding
-them. Single quote by itself must be escaped by a backslash. Too long lines
+of highlight\_options are naturally split by white spaces. If you want to
+use white spaces inside patterns then put single quotes around the patterns.
+Single quote by itself must be escaped by a backslash. Too long lines
 can be split into multiple lines using backslashes.
+
+Files with names containing specific snippet names are loaded before *\~/.hlrc*:
+they are supposed to declare a single snippet (perhaps with a few auxiliary
+snippets) to help *hl* load faster.
 
 man Term::Highlight
 -------------------
