@@ -137,8 +137,8 @@ highlight options).
 
 - **-s &lt;snippet&gt;**
       loads a snippet with specified name from file *\~/.hlrc* or
-      *\~/.hlrc_<snippet>*. The white space between `-s` and the name of the
-      snippet may be omitted. For example `-sW` loads snippet with name `W`.
+      *\~/.hlrc_&lt;snippet&gt;*. The white space between `-s` and the name of
+      the snippet may be omitted. For example `-sW` loads snippet with name `W`.
       Multiple options `-s` with different snippet names are allowed.
 
 - **-g (-grep)**
@@ -252,7 +252,7 @@ color id *21* using color id *46* for background and bold font.
 
 #### FILES
 
-**\~/.hlrc** and **\~/.hlrc_<snippet-name>**
+**\~/.hlrc** and **\~/.hlrc_&lt;snippet-name&gt;**
 
 currently these files may contain only snippets that can be loaded with
 option `-s`. The format of the snippet line is
@@ -274,7 +274,7 @@ can be split into multiple lines using backslashes.
 
 Files with names containing specific snippet names are loaded before *\~/.hlrc*:
 they are supposed to declare a single snippet (perhaps with a few auxiliary
-snippets) to help *hl* load faster.
+snippets) to help *hl* start faster.
 
 man Term::Highlight
 -------------------

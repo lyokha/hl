@@ -690,7 +690,7 @@ Too long lines can be split into multiple lines using backslashes.
 
 Files with names containing specific snippet names are loaded before ~/.hlrc:
 they are supposed to declare a single snippet (perhaps with a few auxiliary
-snippets) to help hl load faster.
+snippets) to help hl start faster.
 
 =head1 SEE ALSO
 
