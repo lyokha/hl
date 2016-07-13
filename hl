@@ -676,13 +676,13 @@ B<snippet name highlight_options>
 where I<snippet> is a keyword, I<name> is the name of the snippet and
 I<highlight_options> contains highlight options possibly preceded by the global
 option '-u'.
-Here is an example of snippet which can be used to highlight words that start
-with a capital letter:
+Here is an example of a snippet to highlight words that start with a capital
+letter:
 
 B<snippet W       -130 (?:^|[\s])[A-Z]\S+>
 
 Lines that do not match the snippet line pattern are ignored.
-Arguments of highlight_options are naturally split by white spaces.
+Arguments of I<highlight_options> are naturally split by white spaces.
 If you want to use white spaces inside patterns then put single quotes around
 the patterns.
 Single quote by itself must be escaped by a backslash.

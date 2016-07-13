@@ -261,13 +261,13 @@ option `-s`. The format of the snippet line is
 
 where *snippet* is a keyword, *name* is the name of the snippet and
 *highlight\_options* contains highlight options possibly preceded by the
-global option `-u`. Here is an example of snippet which can be used to
-highlight words that start with a capital letter:
+global option `-u`. Here is an example of a snippet to highlight words that
+start with a capital letter:
 
     snippet W -130 (?:^|[\s])[A-Z]\S+
 
 Lines that do not match the snippet line pattern are ignored. Arguments
-of highlight\_options are naturally split by white spaces. If you want to
+of *highlight\_options* are naturally split by white spaces. If you want to
 use white spaces inside patterns then put single quotes around the patterns.
 Single quote by itself must be escaped by a backslash. Too long lines
 can be split into multiple lines using backslashes.
