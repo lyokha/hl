@@ -77,12 +77,13 @@ sub LoadSnippets
 {
     my ( $snippet ) = @_;
     return if exists $rcLoaded{ $snippet } && defined $rcLoaded;
+    my $rc = 0;
     my $RC_FILE_S = $RC_FILE . '_' . $snippet;
-    if ( exists $rcLoaded{ $snippet } || open ( RC, "< $RC_FILE_S" ) )
+    if ( exists $rcLoaded{ $snippet } || ( $rc = open ( RC, "< $RC_FILE_S" ) ) )
     {
         $rcLoaded{ $snippet } = 1;
     }
-    elsif ( open ( RC, "< $RC_FILE" ) )
+    elsif ( defined $rcLoaded || ( $rc = open ( RC, "< $RC_FILE" ) ) )
     {
         $rcLoaded{ $snippet } = 0;
         $rcLoaded = 1;
@@ -91,6 +92,7 @@ sub LoadSnippets
     {
         $rcLoaded = 0;
     }
+    return unless $rc;
     my $command;
     while ( <RC> )
     {
@@ -200,7 +202,7 @@ while ( my $arg = shift )
         {
             $TAGTYPE = "term"; last SWITCH_ARGS;
         }
-        if ( $arg =~ /(?:-c)(\S*)/o )
+        if ( $arg =~ /(?:^-c)(\S*)/o )
         {
             my $value = ( $1 eq undef ) ? shift : $1;
             die "Unrecognized context pattern" unless $value =~ /$CTX_PTN/;
@@ -208,7 +210,7 @@ while ( my $arg = shift )
             $CtxPre = $1 || 0;
             $CtxPost = defined $2 ? $2 : $CtxPre; last SWITCH_ARGS;
         }
-        if ( $arg =~ /(?:-s)(\S*)/o )
+        if ( $arg =~ /(?:^-s)(\S*)/o )
         {
             my $snippet = ( $1 eq undef ) ? shift : $1;
             LoadSnippets( $snippet ) unless exists $Snippets{ $snippet };
