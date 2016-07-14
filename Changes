@@ -61,3 +61,7 @@ Revision history for Perl module Term::Highlight and script hl.
 
 2016/06/28 - Version 1.8.9 - fixes in context lines processing
 
+2016/07/14 - Version 1.9.0 - allow natural Unicode symbols in input patterns
+                when option '-u' is set. Support for granular snippet files to
+                help hl start faster.
+
