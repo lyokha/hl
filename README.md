@@ -262,7 +262,7 @@ option `-s`. The format of the snippet line is
 where *snippet* is a keyword, *name* is the name of the snippet and
 *highlight\_options* contains highlight options possibly preceded by the
 global option `-u`. Here is an example of a snippet to highlight words that
-start with a capital letter:
+start with a capital letter.
 
     snippet W -130 (?:^|[\s])[A-Z]\S+
 

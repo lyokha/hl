@@ -23,7 +23,7 @@ Global options affect the behaviour of the program globally:
        ~/.hlrc_<snippet>. The white space between '-s' and the name of the
        snippet can be omitted. For example -sW loads a snippet with name 'W'.
        Multiple options -s with different snippet names are allowed.
-    -g (-grep) prints only lines that include patterns.
+    -g (-grep) prints only lines that match specified patterns.
     -r greps recursively, implies '-g'.
        If the file list is empty then grep starts in the current directory.
     -l prints the list of files where matches were found, implies '-g'.
@@ -41,10 +41,10 @@ Global options affect the behaviour of the program globally:
 
 Highlight options apply to the following them patterns:
     -x[xx][.b] highlights following patterns with color id x[xx], x[xx] is a
-               number within [0..255] range, b is 0 or 1 and stands for
-               background. If b is 0, color id applies to foreground, if it is
-               1 - to background. Suffix .b may be omitted in which case b is
-               equal to 0.
+               number within range [0..255], b is 0 or 1 and stands for
+               background. If b is 0 then color id applies to foreground,
+               if 1 - to background. Suffix .b may be omitted in which case b
+               is equal to 0.
     -i sets ignorecase search.
     -ni unsets ignorecase search.
     -b sets bold font.
@@ -66,9 +66,9 @@ Files ~/.hlrc and ~/.hlrc_<snippet> must contain lines in format:
     highlight_options is an arbitrary line that contains highlight options
     possibly preceded by the global option '-u'. Arguments within
     highlight_options are split by white spaces. If you want to use white
-    spaces inside patterns then put single quotes around the patterns. Single
-    quote by itself must be escaped by a backslash. Too long lines can be split
-    into multiple lines using backslashes.
+    spaces inside patterns then put single quotes around the patterns.
+    Single quote by itself must be escaped by a backslash. Too long lines
+    can be split into multiple lines using backslashes.
 EOHELP
 }
 
@@ -679,7 +679,7 @@ where I<snippet> is a keyword, I<name> is the name of the snippet and
 I<highlight_options> contains highlight options possibly preceded by the global
 option '-u'.
 Here is an example of a snippet to highlight words that start with a capital
-letter:
+letter.
 
 B<snippet W       -130 (?:^|[\s])[A-Z]\S+>
 
