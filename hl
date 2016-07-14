@@ -13,7 +13,7 @@ $CTX_PTN = qr/^(\d+)?\.?(\d+)?$/o;
 sub PrintUsage
 {
 print << "EOHELP"
-$PROGNAME, version $VERSION. See man pages for details.
+$PROGNAME, version $VERSION. See man $PROGNAME for details.
 
 Usage: $PROGNAME [global-options] [[--] highlight-options [patterns] ...]
           [- file1 [file2] ...]
