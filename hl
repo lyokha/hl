@@ -254,6 +254,11 @@ if ( $UTF8Support )
     @Hl_args = map { decode_utf8( $_, 1 ) } @Hl_args;
 }
 $hl->LoadArgs( \@Hl_args );
+if ( $Grep )
+{
+    $Patterns = $hl->GetPatterns();
+    $AlwaysMatches = grep { @$_[ 0 ] eq undef } @$Patterns;
+}
 
 my @Files = @ARGV;
 my $ManyFiles = @Files > 1;
@@ -374,7 +379,19 @@ if ( $GrepRecursively )
                 InitCtx if $CheckCtx;
                 while ( <$FileHandle> )
                 {
-                    my $matches = $hl->Process( \$_ );
+                    my $matches = $AlwaysMatches;
+                    unless ( $matches )
+                    {
+                        for my $ptn ( @$Patterns )
+                        {
+                            if ( $_ =~ @$ptn[ 0 ] )
+                            {
+                                $matches = 1;
+                                last;
+                            }
+                        }
+                    }
+                    $matches &&= $hl->Process( \$_ );
                     my $print_once = $GrepList || $FileIsBinary;
                     if ( $matches )
                     {
@@ -442,7 +459,19 @@ else
         InitCtx if $CheckCtx;
         while ( <$FileHandle> )
         {
-            my $matches = $hl->Process( \$_ );
+            my $matches = 1;
+            if ( $Grep && ! ( $matches = $AlwaysMatches ) )
+            {
+                for my $ptn ( @$Patterns )
+                {
+                    if ( $_ =~ @$ptn[ 0 ] )
+                    {
+                        $matches = 1;
+                        last;
+                    }
+                }
+            }
+            $matches &&= $hl->Process( \$_ );
             #debug purpose
             #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
             #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );

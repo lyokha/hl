@@ -6,7 +6,7 @@ use strict;
 
 our @ISA = qw( Exporter );
 
-our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns Process );
+our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns GetPatterns Process );
 
 our $VERSION = "1.5";
 
@@ -106,6 +106,13 @@ sub ClearPatterns
 {
     my $self = shift;
     @{ $self->{ Patterns } } = ();
+}
+
+
+sub GetPatterns
+{
+    my $self = shift;
+    $self->{ Patterns };
 }
 
 
@@ -292,6 +299,8 @@ Term::Highlight - Perl module to highlight regexp patterns on terminals
 
 =item $obj->ClearPatterns( );
 
+=item $obj->GetPatterns( );
+
 =item $obj->Process( \$string );
 
 =back
@@ -320,6 +329,10 @@ Loads patterns to be processed.
 =item B<ClearPatterns>
 
 clears the loaded patterns.
+
+=item B<GetPatterns>
+
+returns a reference to the loaded patterns.
 
 =item B<LoadArgs>
 
