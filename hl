@@ -360,7 +360,7 @@ if ( $GrepRecursively )
                 {
                     Flush( *STDOUT );
                     warn( "WARNING: Unable to open $File: $!" );
-                    next;
+                    return;
                 }
                 if ( $FileIsBinary )
                 {
