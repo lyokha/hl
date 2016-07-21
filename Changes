@@ -65,3 +65,6 @@ Revision history for Perl module Term::Highlight and script hl.
                 when option '-u' is set. Support for granular snippet files to
                 help hl start faster.
 
+2016/07/21 - Version 1.9.1 - significant speed optimization in the grep mode.
+                Highlight.pm version 1.6 - added a new interface function.
+

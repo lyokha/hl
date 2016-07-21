@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    1.9.0
+Version:    1.9.1
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Thu Jul 21 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.9.1-1
+- hl version 1.9.1, Highlight.pm version 1.6
+
 * Thu Jul 14 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.9.0-1
 - hl version 1.9.0, unicode symbols in input patterns, granular snippet files
 
