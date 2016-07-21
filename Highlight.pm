@@ -293,13 +293,13 @@ Term::Highlight - Perl module to highlight regexp patterns on terminals
 
 =item $obj = Term::Highlight->new( tagtype => $TAGTYPE );
 
-=item $obj->LoadArgs( \@args );
-
 =item $obj->LoadPatterns( \@ptns );
 
-=item $obj->ClearPatterns( );
+=item $obj->LoadArgs( \@args );
 
 =item $obj->GetPatterns( );
+
+=item $obj->ClearPatterns( );
 
 =item $obj->Process( \$string );
 
@@ -326,20 +326,20 @@ expects a reference to an array of references to arrays of type
 [ $pattern, $fg, $bold, $bg ].
 Loads patterns to be processed.
 
-=item B<ClearPatterns>
-
-clears the loaded patterns.
-
-=item B<GetPatterns>
-
-returns a reference to the loaded patterns.
-
 =item B<LoadArgs>
 
 expects an array of references to strings.
 Loads patterns to be processed.
 This is just a convenient version of C<LoadPatterns>.
 Example of array to be loaded: [ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ].
+
+=item B<GetPatterns>
+
+returns a reference to the loaded patterns.
+
+=item B<ClearPatterns>
+
+clears the loaded patterns.
 
 =item B<Process>
 

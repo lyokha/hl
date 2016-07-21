@@ -284,8 +284,9 @@ man Term::Highlight
 ```
 use Term::Highlight;
 $obj = Term::Highlight->new( tagtype => $TAGTYPE );
-$obj->LoadArgs( \@args );
 $obj->LoadPatterns( \@ptns );
+$obj->LoadArgs( \@args );
+$obj->GetPatterns( );
 $obj->ClearPatterns( );
 $obj->Process( \$string );
 ```
@@ -308,15 +309,19 @@ patterns on color terminals. It supports 256 color terminals as well as older
 expects a reference to an array of references to arrays of type
 ``[ $pattern, $fg, $bold, $bg ]``. Loads patterns to be processed.
 
-**ClearPatterns**
-
-clears the loaded patterns.
-
 **LoadArgs**
 
 expects an array of references to strings. Loads patterns to be processed.
 This is just a convenient version of `LoadPatterns`. Example of array
 to be loaded: ``[ "-46", "-25.1", "-i", "\bw.*?\b", "-100" ]``.
+
+**GetPatterns**
+
+returns a reference to the loaded patterns.
+
+**ClearPatterns**
+
+clears the loaded patterns.
 
 **Process**
 
