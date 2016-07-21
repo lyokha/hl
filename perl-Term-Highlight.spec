@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    1.9.1
+Version:    1.9.2
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Thu Jul 21 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.9.2-1
+- hl version 1.9.2, Highlight.pm version 1.7
+
 * Thu Jul 21 2016 Alexey Radkov <alexey.radkov@gmail.com> 1.9.1-1
 - hl version 1.9.1, Highlight.pm version 1.6
 

@@ -3,12 +3,13 @@ package Term::Highlight;
 require Exporter;
 
 use strict;
+use sort 'stable';
 
 our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns GetPatterns Process );
 
-our $VERSION = "1.6";
+our $VERSION = "1.7";
 
 
 sub new
@@ -91,7 +92,7 @@ sub LoadArgs
     }
     #push undefined pattern for last options not followed by any pattern
     #which will apply for the whole string
-    push @{ $self->{ Patterns } }, [ undef, $fgcolor, $bold ] if $lastPatternOmitted;
+    unshift @{ $self->{ Patterns } }, [ undef, $fgcolor, $bold ] if $lastPatternOmitted;
 }
 
 
@@ -135,11 +136,15 @@ sub FindPositionsOfTags
         }
         else
         {
+            #always mark the line matched in this case, perhaps with no tags
+            ++$result;
             my $length = length $$string_ref;
+            next if $length == 0;
+            #trailing new lines cause problems: put the color tag before them
+            --$length if substr( $$string_ref, -1 ) eq "\n";
             next if $length == 0;
             push @$positions, ( [ 0, $length, 1, $i, \$$patterns[ $i ] ],
                                 [ $length, $length, 0, $i, \$$patterns[ $i ] ] );
-            ++$result;
         }
     }
     $result;
