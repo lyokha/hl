@@ -71,3 +71,5 @@ Revision history for Perl module Term::Highlight and script hl.
 2016/07/21 - Version 1.9.2 - version bump after Highlight.pm update.
                 Highlight.pm version 1.7 - fixes in default color mode.
 
+2016/07/22 - Version 1.9.3 - expensive Process() calls otimized.
+

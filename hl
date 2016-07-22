@@ -3,7 +3,7 @@
 use Term::Highlight qw( LoadArgs Process );
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "1.9.2";
+$VERSION = "1.9.3";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/o;
