@@ -413,7 +413,7 @@ if ( $GrepRecursively )
                         ! $CheckCtx && ! $matches;
                     $Location = $LineNumbers ? $FullFile . ':' . $. : $FullFile;
                     $hl_loc->Process( \$Location ) if defined $hl_loc;
-                    $matches &&= $hl->Process( \$_ );
+                    $hl->Process( \$_ ) if $matches;
                     print "$Location: $_";
                     $LastLine = $.;
                 }
@@ -499,7 +499,7 @@ else
                 $hl_loc->Process( \$Location ) if defined $hl_loc;
                 $Location .= ': ';
             }
-            $matches &&= $hl->Process( \$_ );
+            $hl->Process( \$_ ) if $matches;
             #debug purpose
             #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
             #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );
