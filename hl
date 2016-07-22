@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Term::Highlight qw( LoadArgs Process );
+use Term::Highlight ();
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
 $VERSION = "1.9.3";
