@@ -33,16 +33,16 @@ sub ByPositions
 }
 
 
-sub PrintPosition
-{
-    my ( $position, $header ) = @_;
-    #start position, length, start(1) or end(0) of pattern,
-    #pattern number, pattern, fg color id,
-    #bold, bg color id
-    print "$header: $$position[ 0 ], $$position[ 1 ], $$position[ 2 ],
-                    $$position[ 3 ], ${ $$position[ 4 ] }->[ 0 ], ${ $$position[ 4 ] }->[ 1 ],
-                    ${ $$position[ 4 ] }->[ 2 ], ${ $$position[ 4 ] }->[ 3 ]\n";
-}
+#sub PrintPosition
+#{
+    #my ( $position, $header ) = @_;
+    ##start position, length, start(1) or end(0) of pattern,
+    ##pattern number, pattern, fg color id,
+    ##bold, bg color id
+    #print "$header: $$position[ 0 ], $$position[ 1 ], $$position[ 2 ],
+                    #$$position[ 3 ], ${ $$position[ 4 ] }->[ 0 ], ${ $$position[ 4 ] }->[ 1 ],
+                    #${ $$position[ 4 ] }->[ 2 ], ${ $$position[ 4 ] }->[ 3 ]\n";
+#}
 
 
 sub LoadArgs

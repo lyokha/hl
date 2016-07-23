@@ -6,8 +6,10 @@ use Term::Highlight ();
 $VERSION = "1.9.3";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
-$SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/o;
-$CTX_PTN = qr/^(\d+)?\.?(\d+)?$/o;
+$SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/;
+$CTX_PTN = qr/^(\d+)?\.?(\d+)?$/;
+$SNIPPET_OPT_PTN = qr/(?:^-s)(\S*)/;
+$CTX_OPT_PTN = qr/(?:^-c)(\S*)/;
 
 
 sub PrintUsage
@@ -149,15 +151,6 @@ sub LoadSnippets
 }
 
 
-sub LoadPatterns
-{
-    my ( $hl ) = @_;
-    return if $ptnsLoaded++;
-    $Patterns = $hl->GetPatterns();
-    $AlwaysMatches = grep { @$_[ 0 ] eq undef } @$Patterns;
-}
-
-
 sub Flush
 {
     my ( $fh ) = @_;
@@ -211,15 +204,15 @@ while ( my $arg = shift )
         {
             $TAGTYPE = "term"; last SWITCH_ARGS;
         }
-        if ( $arg =~ /(?:^-c)(\S*)/o )
+        if ( $arg =~ $CTX_OPT_PTN )
         {
             my $value = ( $1 eq undef ) ? shift : $1;
-            die "Unrecognized context pattern" unless $value =~ /$CTX_PTN/;
+            die "Unrecognized context pattern" unless $value =~ $CTX_PTN;
             $Grep = 1;
             $CtxPre = $1 || 0;
             $CtxPost = defined $2 ? $2 : $CtxPre; last SWITCH_ARGS;
         }
-        if ( $arg =~ /(?:^-s)(\S*)/o )
+        if ( $arg =~ $SNIPPET_OPT_PTN )
         {
             my $snippet = ( $1 eq undef ) ? shift : $1;
             LoadSnippets( $snippet ) unless exists $Snippets{ $snippet };
@@ -263,7 +256,8 @@ if ( $UTF8Support )
     @Hl_args = map { decode_utf8( $_, 1 ) } @Hl_args;
 }
 $hl->LoadArgs( \@Hl_args );
-LoadPatterns $hl if $Grep;
+my $Patterns = $hl->GetPatterns();
+my $AlwaysMatches = @$Patterns && $$Patterns[ 0 ][ 0 ] eq undef;
 
 my @Files = @ARGV;
 my $ManyFiles = @Files > 1;
@@ -413,7 +407,7 @@ if ( $GrepRecursively )
                         ! $CheckCtx && ! $matches;
                     $Location = $LineNumbers ? $FullFile . ':' . $. : $FullFile;
                     $hl_loc->Process( \$Location ) if defined $hl_loc;
-                    $hl->Process( \$_ ) if $matches;
+                    $hl->Process( \$_ ) if $matches && $_ ne "\n";
                     print "$Location: $_";
                     $LastLine = $.;
                 }
@@ -458,7 +452,6 @@ else
         if ( $FileIsBinary )
         {
             binmode( $FileHandle );
-            LoadPatterns $hl unless $Grep;
         }
         elsif ( $UTF8Support )
         {
@@ -468,8 +461,9 @@ else
         InitCtx if $CheckCtx;
         while ( <$FileHandle> )
         {
-            my $matches = 1;
-            if ( ( $Grep || $FileIsBinary ) && ! ( $matches = $AlwaysMatches ) )
+            #pre-check that line matches: it is cheaper than calling Process()!
+            my $matches = $AlwaysMatches;
+            unless ( $matches )
             {
                 for my $ptn ( @$Patterns )
                 {
@@ -499,7 +493,8 @@ else
                 $hl_loc->Process( \$Location ) if defined $hl_loc;
                 $Location .= ': ';
             }
-            $hl->Process( \$_ ) if $matches;
+            #call Process() only when line matches and is not empty
+            $hl->Process( \$_ ) if $matches && $_ ne "\n";
             #debug purpose
             #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
             #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );

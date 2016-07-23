@@ -5,7 +5,7 @@ snippet d       -215 \d+
 snippet e       -i -196 error -203 warn(?:ing)?
 
 # make in ru_RU.utf8 locale
-snippet make    -b -215 '^\s*gcc\b' '^\s*g\+\+(?=\s)' '^\s*libtool:\s*\w+:' \
+snippet make    -u -b -215 '^\s*gcc\b' '^\s*g\+\+(?=\s)' '^\s*libtool:\s*\w+:' \
                 '^s*\/bin\/sh\s+[\w/.]+' -rb -108 '[\w/.-]+\.c\b(?!:)' \
                 -119 '[\w/+.-]+\.(cc|cpp|cxx|c\+\+)\b(?!:)' \
                 -30 '\s*[\w/+.*-]+\.o\b' -203 '(?<=\s-o)\s*[^-][\w/+.-]*' \
