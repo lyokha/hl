@@ -73,3 +73,6 @@ Revision history for Perl module Term::Highlight and script hl.
 
 2016/07/22 - Version 1.9.3 - expensive Process() calls otimized.
 
+2016/07/22 - Version 1.9.4 - optimization: always pre-check that line matches.
+                Highlight.pm version 1.8 - minor cleanup.
+
