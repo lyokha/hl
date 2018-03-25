@@ -12,7 +12,7 @@ Table of contents
 
 - [Motivational example](#motivational-example)
 - [Installation](#installation)
-- [Highlight rules aka snippets](#highlight-rules-aka-snippets)
+- [Highlighting rules aka snippets](#highlighting-rules-aka-snippets)
 - [Integration with shell](#integration-with-shell)
 - [Grep-like functionality](#grep-like-functionality)
 - [man *hl*](#man-hl)
@@ -56,13 +56,13 @@ $ make test
 $ make install
 ```
 
-Highlight rules aka snippets
+Highlighting rules aka snippets
 ----------------------------
 
 Typing long highlight options like in the commands from the above example in a
 terminal is boring and error-prone. *Hl* allows reading highlight options from
-file *.hlrc* located in the home directory. Examples of such *highlight rules*
-or *snippets* can be found in [conf/.hlrc](conf/.hlrc).
+file *.hlrc* located in the home directory. Examples of such *highlighting
+rules* or *snippets* can be found in [conf/.hlrc](conf/.hlrc).
 
 Integration with shell
 ----------------------
@@ -72,8 +72,8 @@ rich highlighting features of *hl* via their own configuration settings or
 dedicated shell functions. Below are shown examples of such integration that use
 snippets from [conf/.hlrc](conf/.hlrc), special settings for *ack* from
 [conf/.ackrc](conf/.ackrc), and various shell functions from
-[conf/.hl_functions](conf/.hl_functions). To enable highlight shell functions
-after login to the system, add line
+[conf/.hl_functions](conf/.hl_functions). To enable highlighting in shell
+functions after login to the system, add line
 
 ```sh
 . $HOME/.hl_functions
@@ -331,12 +331,12 @@ string. Returns count of found matches.
 See also
 --------
 
-There are two articles about *hl* in my blog both written in Russian:
+There are some articles about *hl* in my blog all written in Russian:
 
 1. [*Использование пользовательской подсветки команд в терминале (на примере
-make)*](http://lin-techdet.blogspot.ru/2011/09/make.html).
+make)*](http://lin-techdet.blogspot.com/2011/09/make.html).
 2. [*Статистика, diff,
-подсветка*](http://lin-techdet.blogspot.ru/2012/11/diff.html).
+подсветка*](http://lin-techdet.blogspot.com/2012/11/diff.html).
 
 *Hl* at *cpan.org*:
 [*hl*](http://metacpan.org/pod/distribution/Term-Highlight/hl),
