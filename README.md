@@ -28,7 +28,7 @@ Motivational example
 
 In this example output of *``cat RAVEN_POE``* with the famous Poe's masterpiece
 verse is piped to *hl*. All *words* that start with capital letters
-(*``\b[A-Z]\w``*) are highlighted with *foreground* color that corresponds to
+(*``\b[A-Z]\w*``*) are highlighted with *foreground* color that corresponds to
 ANSI code *37* (*``-37``*) in *bold* typeface (*``-b``*), all *single-character*
 words (*``\b.\b``*, *a* and *I* here) are highlighted with foreground color *68*
 in *normal* typeface (*``-rb``* stands for *reset bold*), all *non-word*
