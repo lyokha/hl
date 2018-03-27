@@ -333,8 +333,9 @@ Tips and tricks
 ---------------
 
 - When matching against lines with trailing whitespaces, prefer ``\h$`` to
-``\s$``, because inputs from files do not get trimmed and therefore ends of
-lines contain newline characters, which ``\s`` matches but ``\h`` doesn't.
+``\s$``, because inputs from files do not get trimmed in *hl*, and therefore
+ends of lines contain newline characters, which ``\s`` matches but ``\h`` does
+not.
 
 See also
 --------
