@@ -17,6 +17,7 @@ Table of contents
 - [Grep-like functionality](#grep-like-functionality)
 - [man *hl*](#man-hl)
 - [man *Term::Highlight*](#man-termhighlight)
+- [Tips and tricks](#tips-and-tricks)
 - [See also](#see-also)
 
 Motivational example
@@ -72,8 +73,8 @@ rich highlighting features of *hl* via their own configuration settings or
 dedicated shell functions. Below are shown examples of such integration that use
 snippets from [conf/.hlrc](conf/.hlrc), special settings for *ack* from
 [conf/.ackrc](conf/.ackrc), and various shell functions from
-[conf/.hl_functions](conf/.hl_functions). To enable highlighting in shell
-functions after login to the system, add line
+[conf/.hl_functions](conf/.hl_functions). To automatically enable highlighting
+in shell functions after login to the system, add line
 
 ```sh
 . $HOME/.hl_functions
@@ -327,6 +328,13 @@ clears the loaded patterns.
 
 expects a reference to a string. Makes substitution of color tags inside the
 string. Returns count of found matches.
+
+Tips and tricks
+---------------
+
+- When matching against lines with trailing whitespaces, prefer ``\h$`` to
+``\s$``, because inputs from files do not get trimmed and therefore ends of
+lines contain newline characters, which ``\s`` matches but ``\h`` doesn't.
 
 See also
 --------
