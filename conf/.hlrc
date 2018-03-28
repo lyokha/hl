@@ -1,7 +1,7 @@
 # all digits
 snippet d       -215 \d+
 
-# all words that start with a capital letter
+# all words that start with a capital letter (with respect for Unicode)
 snippet W       -u -130 \b\p{UPPER}\w*
 
 # errors and warnings
