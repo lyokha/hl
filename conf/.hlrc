@@ -1,6 +1,9 @@
 # all digits
 snippet d       -215 \d+
 
+# all words that start with a capital letter
+snippet W       -u -130 \b\p{UPPER}\w*
+
 # errors and warnings
 snippet e       -i -196 error -203 warn(?:ing)?
 
@@ -23,6 +26,6 @@ snippet ngrep   -191 '^\s*(?:POST|GET)\s+' '^[ITU]\s+' -211 '\[[A-Z]+\]' \
 
 # diff
 snippet diff    -b -230 '^Index:\s+.*' '^=+$' '^diff.*' '^Binary.*' \
-                '^Только.*' -180 '^\\.*' -110 '^@.*' '^\d.*' \
+                '^Only.*' -180 '^\\.*' -110 '^@.*' '^\d.*' \
                 -rb -120 '^[+>].*' -148 '^[-<].*' -250
 
