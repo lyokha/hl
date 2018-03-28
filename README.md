@@ -4,7 +4,7 @@ hl
 Universal PCRE-based terminal highlighter which is compatible with older 8-color
 and modern 256-color terminals. It consists of a Perl module *Term::Highlight*
 that is capable of inserting *ANSI terminal color escape sequences* at positions
-calculated for specified regular expressions and a Perl script *hl* that uses
+calculated for specified regular expressions, and a Perl script *hl* that uses
 the module.
 
 Table of contents
@@ -54,7 +54,13 @@ Installation
 $ perl Makefile.PL
 $ make
 $ make test
-$ make install
+# make install
+```
+
+or simply
+
+```ShellSession
+# cpan install Term::Highlight
 ```
 
 Highlighting rules aka snippets
