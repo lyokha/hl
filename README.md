@@ -17,7 +17,6 @@ Table of contents
 - [Grep-like functionality](#grep-like-functionality)
 - [man *hl*](#man-hl)
 - [man *Term::Highlight*](#man-termhighlight)
-- [Tips and tricks](#tips-and-tricks)
 - [See also](#see-also)
 
 Motivational example
@@ -334,14 +333,6 @@ clears the loaded patterns.
 
 expects a reference to a string. Makes substitution of color tags inside the
 string. Returns count of found matches.
-
-Tips and tricks
----------------
-
-- When matching against lines with trailing whitespaces, prefer ``\h$`` to
-``\s$``, because inputs from files do not get trimmed in *hl*, and therefore
-ends of lines contain newline characters, which ``\s`` matches but ``\h`` does
-not. More broadly speaking, always prefer ``\h`` to ``\s``.
 
 See also
 --------
