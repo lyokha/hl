@@ -382,12 +382,15 @@ if ( $GrepRecursively )
                 while ( <$FileHandle> )
                 {
                     my $matches = $AlwaysMatches;
+                    my ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
+                    my $trimmed = 0;
                     unless ( $matches )
                     {
-                        ( my $stripped_line = $_ ) =~ s/\R$//;
+                        substr( $line, 0, 1 ) = '';
+                        $trimmed = 1;
                         for my $ptn ( @$Patterns )
                         {
-                            if ( $stripped_line =~ @$ptn[ 0 ] )
+                            if ( $line =~ @$ptn[ 0 ] )
                             {
                                 $matches = 1;
                                 last;
@@ -408,8 +411,10 @@ if ( $GrepRecursively )
                         ! $CheckCtx && ! $matches;
                     $Location = $LineNumbers ? $FullFile . ':' . $. : $FullFile;
                     $hl_loc->Process( \$Location ) if defined $hl_loc;
-                    $hl->Process( \$_ ) if $matches && $_ ne "\n";
-                    print "$Location: $_";
+                    substr( $line, 0, 1 ) = '' unless $trimmed;
+                    $end //= '';
+                    $hl->Process( \$line ) if $matches && $line ne '';
+                    print "$Location: $line$end";
                     $LastLine = $.;
                 }
                 close $FileHandle;
@@ -466,12 +471,15 @@ else
             #Notice that newline characters get removed from the current line
             #before the check
             my $matches = $AlwaysMatches;
+            my ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
+            my $trimmed = 0;
             unless ( $matches )
             {
-                ( my $stripped_line = $_ ) =~ s/\R$//;
+                substr( $line, 0, 1 ) = '';
+                $trimmed = 1;
                 for my $ptn ( @$Patterns )
                 {
-                    if ( $stripped_line =~ @$ptn[ 0 ] )
+                    if ( $line =~ @$ptn[ 0 ] )
                     {
                         $matches = 1;
                         last;
@@ -498,11 +506,13 @@ else
                 $Location .= ': ';
             }
             #call Process() only when line matches and is not empty
-            $hl->Process( \$_ ) if $matches && $_ ne "\n";
+            substr( $line, 0, 1 ) = '' unless $trimmed;
+            $end //= '';
+            $hl->Process( \$line ) if $matches && $line ne '';
             #debug purpose
             #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
-            #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$_ );
-            print $Location, $_;
+            #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$line );
+            print $Location, "$line$end";
             $LastLine = $.;
         }
         close $FileHandle;
