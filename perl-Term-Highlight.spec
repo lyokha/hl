@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.0.0
+Version:    2.0.1
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Fri Mar 30 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.1-1
+- hl version 2.0.1, do not pass newlines from hl to the module part
+
 * Thu Mar 29 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.0-1
 - hl version 2.0.0, Highlight.pm version 2.0.0,
   fixed color tags offsets at ends of lines

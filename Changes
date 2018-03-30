@@ -79,3 +79,5 @@ Revision history for Perl module Term::Highlight and script hl.
 2018/03/29 - Version 2.0.0 - fixed color tags offsets at ends of lines
                 with support for "\r\n" line endings.
 
+2018/03/30 - Version 2.0.1 - do not pass newlines from hl to the module part.
+

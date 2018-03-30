@@ -3,7 +3,7 @@
 use Term::Highlight ();
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "2.0.0";
+$VERSION = "2.0.1";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/;
@@ -167,6 +167,7 @@ sub Flush
 
 push @Hl_args, split '\s+', $ENV{ HL_INITSTRING } if exists
                                                         $ENV{ HL_INITSTRING };
+my $Hl_args = 0;
 
 $TAGTYPE = "none" unless -t STDOUT;
 
@@ -206,7 +207,7 @@ while ( my $arg = shift )
         }
         if ( $arg =~ $CTX_OPT_PTN )
         {
-            my $value = ( $1 eq undef ) ? shift : $1;
+            my $value = $1 eq '' ? shift : $1;
             die "Unrecognized context pattern" unless $value =~ $CTX_PTN;
             $Grep = 1;
             $CtxPre = $1 || 0;
@@ -214,7 +215,7 @@ while ( my $arg = shift )
         }
         if ( $arg =~ $SNIPPET_OPT_PTN )
         {
-            my $snippet = ( $1 eq undef ) ? shift : $1;
+            my $snippet = $1 eq '' ? shift : $1;
             LoadSnippets( $snippet ) unless exists $Snippets{ $snippet };
             die "Snippet '$snippet' failed to load"
                                             unless exists $Snippets{ $snippet };
@@ -257,7 +258,7 @@ if ( $UTF8Support )
 }
 $hl->LoadArgs( \@Hl_args );
 my $Patterns = $hl->GetPatterns();
-my $AlwaysMatches = @$Patterns && $$Patterns[ 0 ][ 0 ] eq undef;
+my $AlwaysMatches = @$Patterns && ! defined $$Patterns[ 0 ][ 0 ];
 
 my @Files = @ARGV;
 my $ManyFiles = @Files > 1;
@@ -354,6 +355,7 @@ if ( $GrepRecursively )
     {
         require File::Find;
         File::Find->import( qw( find ) );
+        use vars qw( $File::Find::name );
         @Files || push @Files, './';
         find
         (
@@ -382,12 +384,13 @@ if ( $GrepRecursively )
                 while ( <$FileHandle> )
                 {
                     my $matches = $AlwaysMatches;
-                    my ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
-                    my $trimmed = 0;
-                    unless ( $matches )
+                    my ( $line, $end ) = ( $_, '' );
+                    my $was_split = 0;
+                    if ( ! $matches && scalar @$Patterns )
                     {
+                        ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
                         substr( $line, 0, 1 ) = '';
-                        $trimmed = 1;
+                        $was_split = 1;
                         for my $ptn ( @$Patterns )
                         {
                             if ( $line =~ @$ptn[ 0 ] )
@@ -411,9 +414,16 @@ if ( $GrepRecursively )
                         ! $CheckCtx && ! $matches;
                     $Location = $LineNumbers ? $FullFile . ':' . $. : $FullFile;
                     $hl_loc->Process( \$Location ) if defined $hl_loc;
-                    substr( $line, 0, 1 ) = '' unless $trimmed;
+                    if ( $matches )
+                    {
+                        unless ( $was_split )
+                        {
+                            ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
+                            substr( $line, 0, 1 ) = '';
+                        }
+                        $hl->Process( \$line ) if $line ne '';
+                    }
                     $end //= '';
-                    $hl->Process( \$line ) if $matches && $line ne '';
                     print "$Location: $line$end";
                     $LastLine = $.;
                 }
@@ -471,12 +481,13 @@ else
             #Notice that newline characters get removed from the current line
             #before the check
             my $matches = $AlwaysMatches;
-            my ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
-            my $trimmed = 0;
-            unless ( $matches )
+            my ( $line, $end ) = ( $_, '' );
+            my $was_split = 0;
+            if ( ! $matches && scalar @$Patterns )
             {
+                ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
                 substr( $line, 0, 1 ) = '';
-                $trimmed = 1;
+                $was_split = 1;
                 for my $ptn ( @$Patterns )
                 {
                     if ( $line =~ @$ptn[ 0 ] )
@@ -506,12 +517,19 @@ else
                 $Location .= ': ';
             }
             #call Process() only when line matches and is not empty
-            substr( $line, 0, 1 ) = '' unless $trimmed;
-            $end //= '';
-            $hl->Process( \$line ) if $matches && $line ne '';
+            if ( $matches )
+            {
+                unless ( $was_split )
+                {
+                    ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
+                    substr( $line, 0, 1 ) = '';
+                }
+                $hl->Process( \$line ) if $line ne '';
+            }
             #debug purpose
             #print "$_->[ 0 ], $_->[ 1 ], $_->[ 2 ], $_->[ 3 ], ",
             #      "@${ $_->[ 4 ] }\n" foreach $hl->Process( \$line );
+            $end //= '';
             print $Location, "$line$end";
             $LastLine = $.;
         }
