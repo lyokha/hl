@@ -386,7 +386,7 @@ if ( $GrepRecursively )
                     my $matches = $AlwaysMatches;
                     my ( $line, $end ) = ( $_, '' );
                     my $was_split = 0;
-                    if ( ! $matches && scalar @$Patterns )
+                    if ( ! $matches && @$Patterns )
                     {
                         ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
                         substr( $line, 0, 1 ) = '';
@@ -483,7 +483,7 @@ else
             my $matches = $AlwaysMatches;
             my ( $line, $end ) = ( $_, '' );
             my $was_split = 0;
-            if ( ! $matches && scalar @$Patterns )
+            if ( ! $matches && @$Patterns )
             {
                 ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
                 substr( $line, 0, 1 ) = '';
