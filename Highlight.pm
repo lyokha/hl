@@ -60,12 +60,9 @@ sub LoadArgs
                 {
                     if ( $1 eq "i" )    { $ignorecase = "i"; last SWITCH_OPTS }
                     if ( $1 eq "ni" )   { $ignorecase = ""; last SWITCH_OPTS }
-                    if ( $1 eq "rfg" )  { $fgcolor = undef;
-                                          last SWITCH_OPTS }
-                    if ( $1 eq "rb" )   { $bold = undef;
-                                          last SWITCH_OPTS }
-                    if ( $1 eq "rbg" )  { $bgcolor = undef;
-                                          last SWITCH_OPTS }
+                    if ( $1 eq "rfg" )  { $fgcolor = undef; last SWITCH_OPTS }
+                    if ( $1 eq "rb" )   { $bold = undef; last SWITCH_OPTS }
+                    if ( $1 eq "rbg" )  { $bgcolor = undef; last SWITCH_OPTS }
                     if ( $1 eq "r" )    { $bold = undef; $bgcolor = undef;
                                           last SWITCH_OPTS }
                     if ( $1 eq "ra" )   { $fgcolor = undef; $bold = undef;
