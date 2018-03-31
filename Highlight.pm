@@ -49,6 +49,7 @@ sub LoadArgs
 {
     my ( $self, $args ) = @_;
     my ( $ignorecase, $fgcolor, $bold, $bgcolor );
+    my ( $last_fgcolor, $last_bold, $last_bgcolor );
     my $lastPatternOmitted = 0;
     while ( my $arg = shift @$args )
     {
@@ -60,18 +61,33 @@ sub LoadArgs
                 {
                     if ( $1 eq "i" )    { $ignorecase = "i"; last SWITCH_OPTS }
                     if ( $1 eq "ni" )   { $ignorecase = ""; last SWITCH_OPTS }
-                    if ( $1 eq "rfg" )  { $fgcolor = undef; last SWITCH_OPTS }
-                    if ( $1 eq "rb" )   { $bold = undef; last SWITCH_OPTS }
-                    if ( $1 eq "rbg" )  { $bgcolor = undef; last SWITCH_OPTS }
-                    if ( $1 eq "r" )    { $bold = undef; $bgcolor = undef; last SWITCH_OPTS }
-                    if ( $1 eq "ra" )   { $fgcolor = undef; $bold = undef; $bgcolor = undef;
+                    if ( $1 eq "rfg" )  { $fgcolor = undef;
+                                          $last_fgcolor = undef;
                                           last SWITCH_OPTS }
-                    if ( $1 eq "b" )    { $bold = 1; last SWITCH_OPTS }
+                    if ( $1 eq "rb" )   { $bold = undef;
+                                          $last_bold = undef;
+                                          last SWITCH_OPTS }
+                    if ( $1 eq "rbg" )  { $bgcolor = undef;
+                                          $last_bgcolor = undef;
+                                          last SWITCH_OPTS }
+                    if ( $1 eq "r" )    { $bold = undef; $bgcolor = undef;
+                                          $last_bold = undef; $last_bgcolor = undef;
+                                          last SWITCH_OPTS }
+                    if ( $1 eq "ra" )   { $fgcolor = undef; $bold = undef;
+                                          $bgcolor = undef;
+                                          $last_bgcolor = undef; $last_bold = undef;
+                                          $last_bgcolor = undef;
+                                          last SWITCH_OPTS }
+                    if ( $1 eq "b" )    { $bold = 1;
+                                          $last_bold = 1;
+                                          last SWITCH_OPTS }
                     if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.1$)/ )
                                         { $bgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
+                                          $last_bgcolor = $bgcolor;
                                           last SWITCH_OPTS }
                     if ( ( my $orig = $1 ) =~ /^\d{1,3}(?=\.0$|$)/ )
                                         { $fgcolor = substr $orig, $-[ 0 ], $+[ 0 ] - $-[ 0 ];
+                                          $last_fgcolor = $fgcolor;
                                           last SWITCH_OPTS }
                     print __PACKAGE__, " : WARNING: unknown option '$arg'\n";
                 }
@@ -88,11 +104,13 @@ sub LoadArgs
                 push @{ $self->{ Patterns } }, [ qr/$arg/, $fgcolor, $bold, $bgcolor ];
             }
             $lastPatternOmitted = 0;
+            $last_fgcolor = $last_bold = $last_bgcolor = undef;
         }
     }
     #push undefined pattern for last options not followed by any pattern
     #which will apply for the whole string
-    unshift @{ $self->{ Patterns } }, [ undef, $fgcolor, $bold ] if $lastPatternOmitted;
+    unshift @{ $self->{ Patterns } },
+                [ undef, $last_fgcolor, $last_bold, $last_bgcolor ] if $lastPatternOmitted;
 }
 
 
