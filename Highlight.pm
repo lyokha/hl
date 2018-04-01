@@ -9,7 +9,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns GetPatterns Process );
 
-our $VERSION = "2.0.1";
+our $VERSION = "2.0.2";
 
 
 sub new
@@ -37,11 +37,13 @@ sub ByPositions
 #{
     #my ( $position, $header ) = @_;
     ##start position, length, start(1) or end(0) of pattern,
-    ##pattern number, pattern, fg color id,
-    ##bold, bg color id
+    ##pattern number, pattern,
+    ##fg color id, bold,
+    ##bg color id
     #print "$header: $$position[ 0 ], $$position[ 1 ], $$position[ 2 ],
-                    #$$position[ 3 ], ${ $$position[ 4 ] }->[ 0 ], ${ $$position[ 4 ] }->[ 1 ],
-                    #${ $$position[ 4 ] }->[ 2 ], ${ $$position[ 4 ] }->[ 3 ]\n";
+                    #$$position[ 3 ], ${ $$position[ 4 ] }->[ 0 ],
+                    #${ $$position[ 4 ] }->[ 1 ], ${ $$position[ 4 ] }->[ 2 ],
+                    #${ $$position[ 4 ] }->[ 3 ]\n";
 #}
 
 
@@ -137,7 +139,7 @@ sub FindPositionsOfTags
                 my $length = $+[ 0 ] - $-[ 0 ];
                 next if $length == 0;
                 my $offset = 0;
-                #trailing new lines cause problems: put the color tag before them
+                #trailing new lines cause problems: put color tags before them
                 #BEWARE: in classis Mac OS "\r" was used as the line terminator,
                 #which is not supported here
                 if ( substr( $$string_ref, $+[0] - 1, 1 ) eq "\n" )
@@ -152,8 +154,10 @@ sub FindPositionsOfTags
                     }
                 }
                 next if $length == 0;
-                push @$positions, ( [ $-[ 0 ], $length, 1, $i, \$$patterns[ $i ] ],
-                                    [ $+[ 0 ] - $offset, $length, 0, $i, \$$patterns[ $i ] ] );
+                push @$positions, ( [ $-[ 0 ], $length, 1, $i,
+                                                        \$$patterns[ $i ] ],
+                                    [ $+[ 0 ] - $offset, $length, 0, $i,
+                                                        \$$patterns[ $i ] ] );
                 ++$result;
             }
         }
@@ -170,8 +174,10 @@ sub FindPositionsOfTags
                 --$length if substr( $$string_ref, -2, 1 ) eq "\r";
             }
             next if $length == 0;
-            push @$positions, ( [ 0, $length, 1, $i, \$$patterns[ $i ] ],
-                                [ $length, $length, 0, $i, \$$patterns[ $i ] ] );
+            push @$positions, ( [ 0, $length, 1, $i,
+                                                \$$patterns[ $i ] ],
+                                [ $length, $length, 0, $i,
+                                                \$$patterns[ $i ] ] );
         }
     }
     $result;
@@ -205,12 +211,13 @@ sub RearrangePositionsOfTags
             if ( defined $found_count )
             {
                 splice( @counts, $found_count, 1 );
-                #end of found pattern are changed by start of a pattern
+                #end of found pattern is changed by start of a pattern
                 #which corresponds to the last element in the @counts
                 if ( @counts )
                 {
                     $$position[ 1 ] = $counts[ $#counts ][ 1 ];
-                    $$position[ 2 ] = -1;   #not 1 for correct work of ByPositions()
+                    $$position[ 2 ] = -1;   #not 1 for correct work of
+                                            #ByPositions()
                     $$position[ 3 ] = $counts[ $#counts ][ 0 ];
                     $$position[ 4 ] = \$$patterns[ $counts[ $#counts ][ 0 ] ];
                 }
@@ -237,27 +244,28 @@ sub InsertTags
                 {
                     use integer;
                     my $bold = ${ $$position[ 4 ] }->[ 2 ] || 22;
-                    # BEWARE: documentation says that escape sequences 39; and 49;
-                    # are not supported everywhere
+                    #BEWARE: documentation says that escape sequences 39;
+                    #and 49; are not supported everywhere
                     my ( $fgcolor, $bgcolor )= ( "39", "49" );
                     #color id in [0..15]
-                    if ( ${ $$position[ 4 ] }->[ 1 ] < 16 && ${ $$position[ 4 ] }->[ 3 ] < 16 )
+                    if ( ${ $$position[ 4 ] }->[ 1 ] < 16 &&
+                                            ${ $$position[ 4 ] }->[ 3 ] < 16 )
                     {
-                        $fgcolor = "3" . ${ $$position[ 4 ] }->[ 1 ] % 8 if defined
-                                     ${ $$position[ 4 ] }->[ 1 ];
-                        $bgcolor = "4" . ${ $$position[ 4 ] }->[ 3 ] % 8 if defined
-                                     ${ $$position[ 4 ] }->[ 3 ];
-                        $bold = ${ $$position[ 4 ] }->[ 1 ] / 8 if defined
-                                     ${ $$position[ 4 ] }->[ 1 ];
+                        $fgcolor = "3" . ${ $$position[ 4 ] }->[ 1 ] % 8
+                                        if defined ${ $$position[ 4 ] }->[ 1 ];
+                        $bgcolor = "4" . ${ $$position[ 4 ] }->[ 3 ] % 8
+                                        if defined ${ $$position[ 4 ] }->[ 3 ];
+                        $bold = ${ $$position[ 4 ] }->[ 1 ] / 8
+                                        if defined ${ $$position[ 4 ] }->[ 1 ];
                         $bold ||= ${ $$position[ 4 ] }->[ 2 ] || 22;
                     }
                     #color id in [16..255]
                     else
                     {
-                        $fgcolor = "38;5;" . ${ $$position[ 4 ] }->[ 1 ] if defined
-                                     ${ $$position[ 4 ] }->[ 1 ];
-                        $bgcolor = "48;5;" . ${ $$position[ 4 ] }->[ 3 ] if defined
-                                     ${ $$position[ 4 ] }->[ 3 ];
+                        $fgcolor = "38;5;" . ${ $$position[ 4 ] }->[ 1 ]
+                                        if defined ${ $$position[ 4 ] }->[ 1 ];
+                        $bgcolor = "48;5;" . ${ $$position[ 4 ] }->[ 3 ]
+                                        if defined ${ $$position[ 4 ] }->[ 3 ];
                     }
                     $bold .= ";" if defined $bold;
                     $colortag = qq/\033[$bold$fgcolor;${bgcolor}m/;
@@ -273,7 +281,10 @@ sub InsertTags
         {
             SWITCH_TAGTYPE:
             {
-                if ( $tagtype eq "term" ) { $colortag = qq/\033[0m/; last SWITCH_TAGTYPE; }
+                if ( $tagtype eq "term" )
+                {
+                    $colortag = qq/\033[0m/; last SWITCH_TAGTYPE;
+                }
                 if ( $tagtype eq "debug" || $tagtype eq "debug-term" )
                 {
                     $colortag = "_$$position[ 3 ]_}"; last SWITCH_TAGTYPE;
@@ -290,20 +301,22 @@ sub Process
 {
     #string to process
     my ( $self, $String_ref ) = @_;
-    #@Positions contains the start and end positions of all found patterns in the current string
-    #and other data relative to the patterns (length of found pattern, start/end_of_pattern flag,
-    #pattern count number and a reference to pattern data)
+    #@Positions contains the start and the end positions of all found patterns
+    #in the current string and other data related to the patterns (length of
+    #found pattern, start/end_of_pattern flag, pattern count number and a
+    #reference to pattern data)
     my @Positions;
 
     #populate @Positions
-    my $found_matches = FindPositionsOfTags( \@Positions, \@{ $self->{ Patterns } }, $String_ref )
-        or return 0;
+    my $found_matches = FindPositionsOfTags( \@Positions,
+                        \@{ $self->{ Patterns } }, $String_ref ) or return 0;
 
-    #do not change original string and return found positions if an array is expected
+    #do not change original string and return found positions if an array is
+    #expected
     return @Positions if wantarray;
 
-    #replace all but the last ending tags from @Positions by one-before-the-last starting tag
-    #(crucial for terminal color escape sequences algorithm)
+    #replace all but the last ending tags from @Positions by one-before-the-last
+    #starting tag (crucial for terminal color escape sequences algorithm)
     RearrangePositionsOfTags( \@Positions, \@{ $self->{ Patterns } } );
 
     #insert tags into current line
@@ -391,7 +404,7 @@ A. Radkov, E<lt>alexey.radkov@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008-2016 by A. Radkov.
+Copyright (C) 2008-2018 by A. Radkov.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,

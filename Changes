@@ -81,3 +81,6 @@ Revision history for Perl module Term::Highlight and script hl.
 
 2018/03/30 - Version 2.0.1 - do not pass newlines from hl to the module part.
 
+2018/04/01 - Version 2.0.2 - better treatment of the trailing highlight options
+                not followed by a pattern.
+

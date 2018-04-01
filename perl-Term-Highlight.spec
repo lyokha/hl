@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.0.1
+Version:    2.0.2
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Sun Apr 01 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.2-1
+- hl version 2.0.2, better treatment of the trailing highlight options
+  not followed by a pattern
+
 * Fri Mar 30 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.1-1
 - hl version 2.0.1, do not pass newlines from hl to the module part
 
