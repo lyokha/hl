@@ -355,12 +355,12 @@ if ( $GrepRecursively )
     {
         require File::Find;
         File::Find->import( qw( find ) );
-        use vars qw( $File::Find::name );
         @Files || push @Files, './';
         find
         (
             sub
             {
+                no warnings 'once';     #for $File::Find::name
                 my ( $FullFile, $File, $FileIsBinary ) =
                                             ( $File::Find::name, $_, -B $_ );
                 return unless -f $File;
