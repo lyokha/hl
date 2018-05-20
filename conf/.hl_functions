@@ -45,7 +45,7 @@ function cgr
 
 function hlgrep
 {
-    `env which hl` -t -r -n "$@" |
+    `env which hl` -f -t -r -n "$@" |
             sed 's/:\(\x1b\[22;38;5;224;49m\)\([[:digit:]]\+\)'`
                `'\(\x1b\[22;38;5;248;49m\)\(\x1b\[0m\): / ⎜ \1\2\1\3 ⎜ /' |
             column -t -s⎜ -o⎜ |

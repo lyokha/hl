@@ -153,6 +153,10 @@ highlight options).
 - **-r**  greps recursively, implies `-g`. If the file list is empty then grep
       starts in the current directory.
 
+- **-f (-flist)**
+      builds the file list from the trailing arguments automatically when option
+      '-' is not specified.
+
 - **-l**  prints the list of files where matches were found, implies `-g`.
 
 - **-c &lt;pre[.post]&gt;**

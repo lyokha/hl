@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.0.2
+Version:    2.0.3
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Sun May 20 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.3-1
+- hl version 2.0.3, added new global option '-f' to build the file list
+  from the trailing arguments automatically when option '-' is not specified
+
 * Sun Apr 01 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.2-1
 - hl version 2.0.2, better treatment of the trailing highlight options
   not followed by a pattern
