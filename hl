@@ -195,23 +195,23 @@ while ( my $arg = shift )
         {
             $LineNumbers = 1; last SWITCH_ARGS;
         }
-        if ( $arg eq "-g" || $arg eq "-grep" || $arg eq "--grep" )
+        if ( $arg eq "-g" || $arg eq "-grep" )
         {
             $Grep = 1; last SWITCH_ARGS;
         }
-        if ( $arg eq "-f"  || $arg eq "-flist" || $arg eq "--filelist")
-        {
-            $BuildFilelist = 1; last SWITCH_ARGS;
-        }
-        if ( $arg eq "-u" || $arg eq "-utf8" || $arg eq "--utf8" )
+        if ( $arg eq "-u" || $arg eq "-utf8" )
         {
             $UTF8Support = 1; last SWITCH_ARGS;
         }
-        if ( $arg eq "-b" || $arg eq "-bin" || $arg eq "--binary" )
+        if ( $arg eq "-f" || $arg eq "-flist" )
+        {
+            $BuildFilelist = 1; last SWITCH_ARGS;
+        }
+        if ( $arg eq "-b" || $arg eq "-bin" )
         {
             $BinarySupport = 1; last SWITCH_ARGS;
         }
-        if ( $arg eq "-t" || $arg eq "-term" || $arg eq "--terminal" )
+        if ( $arg eq "-t" || $arg eq "-term" )
         {
             $TAGTYPE = "term"; last SWITCH_ARGS;
         }
@@ -245,7 +245,7 @@ while ( my $arg = shift )
         {
             PrintUsage; exit 0;
         }
-        if ( $arg eq "-d" || $arg eq "-debug" || $arg eq "--debug" )
+        if ( $arg eq "-d" || $arg eq "-debug" )
         {
             $TAGTYPE = "debug-term"; last SWITCH_ARGS;
         }
@@ -276,9 +276,12 @@ my @Files = @ARGV;
 
 if ( $BuildFilelist && $FilelistIdx < 0 )
 {
-    for ( ; $FilelistIdx < 0; ++$FilelistIdx )
+    my $idx = $FilelistIdx;
+    $FilelistIdx = 0;
+    for ( my $i = 0; $i > $idx; --$i )
     {
-        last if -e $Hl_args[ $FilelistIdx ];
+        last unless -e $Hl_args[ $i - 1 ];
+        --$FilelistIdx;
     }
     @Files = splice @Hl_args, $FilelistIdx if $FilelistIdx;
 }
