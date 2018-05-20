@@ -155,7 +155,7 @@ highlight options).
 
 - **-f (-flist)**
       builds the file list from the trailing arguments automatically when option
-      '-' is not specified.
+      `-` is not specified.
 
 - **-l**  prints the list of files where matches were found, implies `-g`.
 
