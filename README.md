@@ -227,8 +227,8 @@ prepended to any highlight options given in command line.
 - **--**  explicitly separates global and highlight options.
 
 - **-**   separates global and highlight options from list of files to process.
-      As soon as hl may read from standard input, using a list of files to
-      process is not obligatory.
+      As soon as hl may read from standard input or use option `-f`, using a
+      list of files to process is not obligatory.
 
 #### ENVIRONMENT VARIABLES
 
