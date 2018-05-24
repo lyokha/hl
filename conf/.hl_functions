@@ -36,10 +36,9 @@ done
 function cgr
 {
     `env which cgrep` --color --format='#f ⎜ #n ⎜ #l' --no-column -r "$@" |
-            column -t -s⎜ -o⎜ |
+            column -t -s⎜ -o⎜ -Nf,n,s -H- -d -Rn -Es |
             sed 's/\x1b\[1;94m/\x1b\[38;5;150m/
-                 s/\x1b\[1m/\x1b\[38;5;227m/g
-                 s/\(\s\+\)\([[:digit:]]\+\)\(\s\+\)/\3\2\1/' |
+                 s/\x1b\[1m/\x1b\[38;5;227m/g' |
             hl -u -73 '\h+\d+\h+(?=\x{239C})' -216 '\x{239C}'
 }
 
