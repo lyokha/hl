@@ -52,7 +52,7 @@ sub LoadArgs
     my ( $self, $args ) = @_;
     my ( $ignorecase, $fgcolor, $bold, $bgcolor );
     my $lastPatternOmitted = 0;
-    while ( my $arg = shift @$args )
+    while ( defined ( my $arg = shift @$args ) )
     {
         SWITCH_ARGS:
         {

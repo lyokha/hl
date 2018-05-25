@@ -174,9 +174,9 @@ my $FilelistIdx = 0;
 
 $TAGTYPE = "none" unless -t STDOUT;
 
-while ( my $arg = shift )
+while ( defined ( my $arg = shift ) )
 {
-    if ($arg eq '-')
+    if ( $arg eq "-" )
     {
         $BuildFilelist = 0; last;
     }

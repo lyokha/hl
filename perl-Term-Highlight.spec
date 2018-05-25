@@ -52,8 +52,9 @@ rm -rf %{buildroot}
 
 %changelog
 * Sun May 20 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.3-1
-- hl version 2.0.3, added new global option '-f' to build the file list
-  from the trailing arguments automatically when option '-' is not specified
+- hl version 2.0.3, added new global option -f to build the file list
+  from the trailing arguments automatically when option - is not specified,
+  fixed handling of option 0.
 
 * Sun Apr 01 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.2-1
 - hl version 2.0.2, better treatment of the trailing highlight options
