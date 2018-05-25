@@ -51,7 +51,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
-* Sun May 20 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.3-1
+* Fri May 25 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.3-1
 - hl version 2.0.3, added new global option -f to build the file list
   from the trailing arguments automatically when option - is not specified,
   fixed handling of option 0.
