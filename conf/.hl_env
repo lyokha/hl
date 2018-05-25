@@ -1,0 +1,10 @@
+# .hl_env
+
+# for sourcing this, put in ~/.bash_profile line
+#
+# [ -f $HOME/.hl_env ] && . $HOME/.hl_env
+
+export HL_INITSTRING=-227
+export HL_LOCATION='-224 (?<=:)\d+$ -248'
+export HL_CTXDELIM=-248
+
