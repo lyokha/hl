@@ -1,6 +1,8 @@
 hl
 ==
 
+[![CPAN](https://img.shields.io/cpan/v/Term-Highlight.svg)](https://metacpan.org/release/Term-Highlight)
+
 Universal PCRE-based terminal highlighter which is compatible with older 8-color
 and modern 256-color terminals. It consists of a Perl module *Term::Highlight*
 that is capable of inserting *ANSI terminal color escape sequences* at positions

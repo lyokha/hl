@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.0.3
+Version:    2.0.4
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Tue Nov 13 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.4-1
+- hl version 2.0.4, explicitly licensed by the Perl 5 license.
+
 * Fri May 25 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.3-1
 - hl version 2.0.3, added new global option -f to build the file list
   from the trailing arguments automatically when option - is not specified,
