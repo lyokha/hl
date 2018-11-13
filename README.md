@@ -51,10 +51,12 @@ Poe's masterpiece.
 Installation
 ------------
 
+In the following listings prompt ``$`` is associated with a regular user while
+prompt ``#`` &mdash; with a superuser.
+
 ```ShellSession
 $ perl Makefile.PL
 $ make
-$ make test
 # make install
 ```
 
