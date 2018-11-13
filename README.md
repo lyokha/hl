@@ -2,6 +2,7 @@ hl
 ==
 
 [![CPAN](https://img.shields.io/cpan/v/Term-Highlight.svg)](https://metacpan.org/release/Term-Highlight)
+[![License](https://img.shields.io/cpan/l/Term-Highlight.svg)](https://dev.perl.org/licenses/)
 
 Universal PCRE-based terminal highlighter which is compatible with older 8-color
 and modern 256-color terminals. It consists of a Perl module *Term::Highlight*
