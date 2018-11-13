@@ -52,8 +52,8 @@ Poe's masterpiece.
 Installation
 ------------
 
-In the following listings prompt ``$`` is associated with a regular user while
-prompt ``#`` &mdash; with a superuser.
+In the following listings prompt ``$`` belongs to a regular user while prompt
+``#`` &mdash; to a superuser.
 
 ```ShellSession
 $ perl Makefile.PL
