@@ -309,11 +309,13 @@ sub Process
 
     #populate @Positions
     my $found_matches = FindPositionsOfTags( \@Positions,
-                        \@{ $self->{ Patterns } }, $String_ref ) or return 0;
+                                    \@{ $self->{ Patterns } }, $String_ref );
 
     #do not change original string and return found positions if an array is
     #expected
     return @Positions if wantarray;
+
+    return 0 unless $found_matches;
 
     #replace all but the last ending tags from @Positions by one-before-the-last
     #starting tag (crucial for terminal color escape sequences algorithm)
