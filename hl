@@ -10,6 +10,7 @@ $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/;
 $CTX_PTN = qr/^(\d+)?\.?(\d+)?$/;
 $SNIPPET_OPT_PTN = qr/(?:^-s)(\S*)/;
 $CTX_OPT_PTN = qr/(?:^-c)(\S*)/;
+$STRIP_EOL_PTN = qr/(?=\R$)/;
 $HIDDEN_FILE_PTN = qr/^\..+/;
 
 
@@ -434,8 +435,8 @@ if ( $GrepRecursively )
                     my $was_split = 0;
                     if ( ! $matches && @$Patterns )
                     {
-                        ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
-                        substr( $line, 0, 1 ) = '';
+                        ( $line, $end ) = split( $STRIP_EOL_PTN, $_, 2 );
+                        $line //= '';
                         $was_split = 1;
                         for my $ptn ( @$Patterns )
                         {
@@ -464,8 +465,8 @@ if ( $GrepRecursively )
                     {
                         unless ( $was_split )
                         {
-                            ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
-                            substr( $line, 0, 1 ) = '';
+                            ( $line, $end ) = split( $STRIP_EOL_PTN, $_, 2 );
+                            $line //= '';
                         }
                         $hl->Process( \$line ) if $line ne '';
                     }
@@ -531,8 +532,8 @@ else
             my $was_split = 0;
             if ( ! $matches && @$Patterns )
             {
-                ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
-                substr( $line, 0, 1 ) = '';
+                ( $line, $end ) = split( $STRIP_EOL_PTN, $_, 2 );
+                $line //= '';
                 $was_split = 1;
                 for my $ptn ( @$Patterns )
                 {
@@ -567,8 +568,8 @@ else
             {
                 unless ( $was_split )
                 {
-                    ( $line, $end ) = split( /(?=\R$)/, "x$_", 2 );
-                    substr( $line, 0, 1 ) = '';
+                    ( $line, $end ) = split( $STRIP_EOL_PTN, $_, 2 );
+                    $line //= '';
                 }
                 $hl->Process( \$line ) if $line ne '';
             }
