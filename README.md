@@ -158,6 +158,9 @@ highlight options).
 - **-r**  greps recursively, implies `-g`. If the file list is empty then grep
       starts in the current directory.
 
+- **-a**  greps inside hidden files and directories, implies `-r`. Names of
+      hidden files and directories start with a dot symbol.
+
 - **-f (-flist)**
       builds the file list from the trailing arguments automatically when option
       `-` is not specified.

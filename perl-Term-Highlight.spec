@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.0.4
+Version:    2.1.0
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Wed Jan 15 2020 Alexey Radkov <alexey.radkov@gmail.com> 2.1.0-1
+- hl version 2.1.0, no longer grep hidden files and descend into hidden
+  directories by default. A new option -a was added to do so.
+
 * Tue Nov 13 2018 Alexey Radkov <alexey.radkov@gmail.com> 2.0.4-1
 - hl version 2.0.4, explicitly licensed by the Perl 5 license.
 
