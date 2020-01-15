@@ -140,7 +140,7 @@ sub FindPositionsOfTags
                 next if $length == 0;
                 my $offset = 0;
                 #trailing new lines cause problems: put color tags before them
-                #BEWARE: in classis Mac OS "\r" was used as the line terminator,
+                #BEWARE: in older Mac OS "\r" was used as the line terminator,
                 #which is not supported here
                 if ( substr( $$string_ref, $+[0] - 1, 1 ) eq "\n" )
                 {
