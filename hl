@@ -457,7 +457,7 @@ sub VisitNode
                 $check = substr( $_, -$len );
                 $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
                 ( $line, $end ) = ( substr( $_, 0, -$len ),
-                                    substr ( $_, -$len ) ) if $len;
+                                    substr( $_, -$len ) ) if $len;
             }
             $hl->Process( \$line ) if $line ne '';
         }
@@ -587,7 +587,7 @@ else
                     my $check = substr( $_, -$len );
                     $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
                     ( $line, $end ) = ( substr( $_, 0, -$len ),
-                                        substr ( $_, -$len ) ) if $len;
+                                        substr( $_, -$len ) ) if $len;
                 }
                 $hl->Process( \$line ) if $line ne '';
             }
