@@ -584,7 +584,7 @@ else
                 {
                     $len = length $_;
                     $len = 2 if $len > 2;
-                    my $check = substr( $_, -$len );
+                    $check = substr( $_, -$len );
                     $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
                     ( $line, $end ) = ( substr( $_, 0, -$len ),
                                         substr( $_, -$len ) ) if $len;
