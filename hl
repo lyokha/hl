@@ -415,13 +415,13 @@ sub VisitNode
     while ( <$FileHandle> )
     {
         my $matches = $AlwaysMatches;
-        my ( $line, $end, $check, $len ) = ( $_, '', '', 0 );
+        my ( $line, $end, $check, $len, $len_check ) = ( $_, '', '', 2, 0 );
         my $was_split = 0;
         if ( ! $matches && @$Patterns )
         {
-            $len = length $_;
-            $len = 2 if $len > 2;
             $check = substr( $_, -$len );
+            $len_check = length $check;
+            $len = $len_check if $len > $len_check;
             $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
             ( $line, $end ) = ( substr( $_, 0, -$len ),
                                 substr( $_, -$len ) ) if $len;
@@ -452,9 +452,9 @@ sub VisitNode
         {
             unless ( $was_split )
             {
-                $len = length $_;
-                $len = 2 if $len > 2;
                 $check = substr( $_, -$len );
+                $len_check = length $check;
+                $len = $len_check if $len > $len_check;
                 $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
                 ( $line, $end ) = ( substr( $_, 0, -$len ),
                                     substr( $_, -$len ) ) if $len;
@@ -536,15 +536,15 @@ else
             #Notice that newline characters get removed from the current line
             #before the check
             my $matches = $AlwaysMatches;
-            my ( $line, $end, $check, $len ) = ( $_, '', '', 0 );
+            my ( $line, $end, $check, $len, $len_check ) = ( $_, '', '', 2, 0 );
             my $was_split = 0;
             if ( ! $matches && @$Patterns )
             {
-                $len = length $_;
-                $len = 2 if $len > 2;
                 #search for line endings only within 2 last characters of the
                 #current line
                 $check = substr( $_, -$len );
+                $len_check = length $check;
+                $len = $len_check if $len > $len_check;
                 $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
                 ( $line, $end ) = ( substr( $_, 0, -$len ),
                                     substr( $_, -$len ) ) if $len;
@@ -582,9 +582,9 @@ else
             {
                 unless ( $was_split )
                 {
-                    $len = length $_;
-                    $len = 2 if $len > 2;
                     $check = substr( $_, -$len );
+                    $len_check = length $check;
+                    $len = $len_check if $len > $len_check;
                     $len -= pos( $check ) if $check =~ /$STRIP_EOL_PTN/g;
                     ( $line, $end ) = ( substr( $_, 0, -$len ),
                                         substr( $_, -$len ) ) if $len;
