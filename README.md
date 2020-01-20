@@ -301,7 +301,7 @@ man Term::Highlight
 
 ```
 use Term::Highlight;
-$obj = Term::Highlight->new( tagtype => $TAGTYPE );
+$obj = Term::Highlight->new( tagtype => $TAGTYPE, skip_nl_check => 0 );
 $obj->LoadPatterns( \@ptns );
 $obj->LoadArgs( \@args );
 $obj->GetPatterns( );
@@ -313,6 +313,9 @@ Currently `term` and `term-debug` tagtypes are supported. If tagtype
 is `term` then boundaries of found patterns will be enclosed in
 ANSI terminal color escape sequence tags, if tagtype is `term-debug` then
 they will be marked by special symbolic sequences.
+
+Newlines are treated specially. Set skip_nl_check to non-zero value if input
+lines do not contain newlines: this will gain a bit of speed.
 
 #### DESCRIPTION
 
