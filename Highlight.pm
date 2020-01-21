@@ -9,7 +9,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( LoadArgs LoadPatterns ClearPatterns GetPatterns Process );
 
-our $VERSION = "2.1.1";
+our $VERSION = "2.1.2";
 
 
 sub new
@@ -360,20 +360,32 @@ Term::Highlight - Perl module to highlight regexp patterns on terminals
 
 =back
 
-Currently C<term> and C<term-debug> tagtypes are supported.
-If tagtype is C<term> then boundaries of found patterns will be enclosed in
-ANSI terminal color escape sequence tags, if tagtype is C<term-debug> then they
-will be marked by special symbolic sequences.
-
-Newlines are treated specially.
-Set skip_nl_check to non-zero value if input lines do not contain newlines:
-this will gain a bit of speed.
-
 =head1 DESCRIPTION
 
 Term::Highlight is a Perl module aimed to support highlighting of regexp
-patterns on color terminals.
+patterns in color terminals.
 It supports 256 color terminals a well as older 8 color terminals.
+
+=head1 OPTIONS
+
+=over
+
+=item B<tagtype>
+
+sets type of color tags.
+Only C<term> and C<term-debug> tag types are currently supported.
+If tagtype is C<term> then boundaries of found patterns will be enclosed in
+ANSI terminal color escape sequence tags.
+If tagtype is C<term-debug> then they will be marked by special symbolic
+sequences: this is supposed to use for debug purposes.
+
+=item B<skip_nl_check>
+
+defines how to treat newlines in input lines.
+Set this to non-zero value if input lines do not contain newlines: this will
+gain a bit of speed.
+
+=back
 
 =head1 EXPORTS
 

@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.1.1
+Version:    2.1.2
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Mon Jan 20 2020 Alexey Radkov <alexey.radkov@gmail.com> 2.1.2-1
+- hl version 2.1.2, performance improvements.
+
 * Fri Jan 17 2020 Alexey Radkov <alexey.radkov@gmail.com> 2.1.1-1
 - hl version 2.1.1, corrected and faster line endings split.
 
