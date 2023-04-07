@@ -46,13 +46,16 @@ function cgr
 
 function hlgrep
 {
+    local width=$(($(tput cols) - 2))
     `env which hl` -f -t -r -n "$@" |
             sed 's/:\(\x1b\[22;38;5;224;49m\)\([[:digit:]]\+\)'`
                `'\(\x1b\[22;38;5;248;49m\)\(\x1b\[0m\): / ⎜ \1\2\1\3 ⎜ /
                  s/^\x1b\[22;38;5;248;49m--\x1b\[0m$/- ⎜ - ⎜ -/' |
-            column -t -s⎜ -o⎜ -Nf,n,s -H- -d -Rn -Es |
+            column -t -s⎜ -o⎜ -c$width -Nf,n,s -H- -d -Rn -Ts -Es |
             sed 's/^\(-\s*\xe2\x8e\x9c\s*\)\{2\}-$/'`
-               `'\x1b\[22;38;5;248;49m--\x1b\[0m/' |
+               `'\x1b\[22;38;5;248;49m--\x1b\[0m/;'`
+               `'s/\xef\xbf\xbd\(\[[[:digit:]]\+\(;\([[:digit:]]\+\)\)*m\)/'`
+               `'\x1b\1/g;s/\xef\xbf\xbd.*//;s/$/\x1b\[0m/' |
             hl -u -216 '\x{239C}'
 }
 
