@@ -47,11 +47,11 @@ function cgr
 function hlgrep
 {
     local width=$(($(tput cols) - 2))
-    # use  (\xee\x82\xb1 / \x{eob1}) (requires Nerd fonts)
+    # use  (\xee\x82\xb1 / \x{e0b1}) (requires Nerd fonts)
     #  or ⎜ (\xe2\x8e\x9c / \x{239c}) as column delimiters
     $(env which hl) -f -t -r -n "$@" |
-            sed 's/:\(\x1b\[22;38;5;224;49m\)\([[:digit:]]\+\)'`
-               `'\(\x1b\[22;38;5;248;49m\)\(\x1b\[0m\): /  \1\2\1\3  /
+            sed 's/:\(\x1b\[22;38;5;224;49m[[:digit:]]\+\)'`
+               `'\x1b\[22;38;5;248;49m\(\x1b\[0m\): /  \1\2  /
                  s/^\x1b\[22;38;5;248;49m--\x1b\[0m$/-  -  -/' |
             column -t -s -o -c$width -Nf,n,s -H- -d -Rn -Ts -Es |
             sed 's/^\(-\s*\xee\x82\xb1\s*\)\{2\}-$/'`
