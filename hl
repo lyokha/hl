@@ -502,7 +502,8 @@ sub VisitNode
     no warnings qw( once uninitialized );       #File::Find is the culprit
     ( $FullFile, $CurFile ) = ( $File::Find::name, $_ );
     my $abs_cur_file = Cwd::abs_path( $CurFile );
-    unless ( grep { $abs_cur_file eq $_ } @AbsFiles )
+    my $cur_file_listed = grep { $abs_cur_file eq $_ } @AbsFiles;
+    unless ( $cur_file_listed )
     {
         if ( ! $GrepAll && $CurFile =~ $HIDDEN_FILE_PTN ||
                                     exists $GitignoreList{ $abs_cur_file } )
@@ -513,7 +514,15 @@ sub VisitNode
     }
     return unless -f $CurFile;
     $FileIsBinary = -B $CurFile;
-    return if $FileIsBinary && ! $BinarySupport;
+    if ( $FileIsBinary && ! $BinarySupport )
+    {
+        if ( $cur_file_listed )
+        {
+            Flush( *STDOUT );
+            warn( "WARNING: $FullFile is a binary file, ignored" );
+        }
+        return;
+    }
     unless ( open $FileHandle, "< $CurFile" )
     {
         Flush( *STDOUT );
