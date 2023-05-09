@@ -499,11 +499,11 @@ sub ProcessFile
 
 sub VisitNode
 {
-    no warnings qw( once uninitialized );       #File::Find is the culprit
+    no warnings qw( once );     #needed for File::Find variables
     ( $FullFile, $CurFile ) = ( $File::Find::name, $_ );
     my $abs_cur_file = Cwd::abs_path( $CurFile );
-    my $cur_file_listed = grep { $abs_cur_file eq $_ } @AbsFiles;
-    unless ( $cur_file_listed )
+    my $top = $abs_cur_file eq $AbsTopPath;
+    unless ( $top )
     {
         if ( ! $GrepAll && $CurFile =~ $HIDDEN_FILE_PTN ||
                                     exists $GitignoreList{ $abs_cur_file } )
@@ -516,7 +516,7 @@ sub VisitNode
     $FileIsBinary = -B $CurFile;
     if ( $FileIsBinary && ! $BinarySupport )
     {
-        if ( $cur_file_listed )
+        if ( $top )
         {
             Flush( *STDOUT );
             warn( "WARNING: $FullFile is a binary file, ignored" );
@@ -536,21 +536,18 @@ sub VisitNode
 #process file list or STDIN line by line
 if ( $GrepRecursively )
 {
-    my $count = 0;
+    require File::Find;
+    @Files || push @Files, './';
     for my $File ( @Files )
     {
         unless ( -e $File )
         {
+            Flush( *STDOUT );
             warn( "WARNING: File $File does not exist" );
-            ++$count;
+            next;
         }
-    }
-    if ( $count == 0 || $count != @Files )
-    {
-        require File::Find;
-        @Files || push @Files, './';
-        @AbsFiles = map { Cwd::abs_path( $_ ) } @Files;
-        File::Find::find( \&VisitNode, @Files );
+        $AbsTopPath = Cwd::abs_path( $File );
+        File::Find::find( \&VisitNode, $File );
     }
 }
 else
