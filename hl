@@ -155,7 +155,7 @@ sub LoadSnippets
         }
         $command = undef;
     }
-    close ( RC );
+    close RC;
 }
 
 
@@ -328,14 +328,16 @@ if ( exists $ENV{ HL_CTXDELIM } && ! $GrepList && $CheckCtx )
 
 if ( $GrepRecursively && $Gitignore )
 {
-    if ( open( GIT, 'git status --ignored -s 2>/dev/null|' ) )
+    if ( open( GIT_STATUS, 'git status --ignored -s 2>/dev/null|' ) )
     {
-        while ( <GIT> )
+        require Cwd;
+        while ( <GIT_STATUS> )
         {
-            my ( $mode, $ptn ) = split;
-            $GitignoreList{ $ptn } = 1 if $mode eq '??' || $mode eq '!!';
+            my ( $mode, $file ) = split;
+            $GitignoreList{ Cwd::abs_path( $file ) } = 1
+                                            if $mode eq '??' || $mode eq '!!';
         }
-        close GIT;
+        close GIT_STATUS;
     }
 }
 
@@ -497,26 +499,16 @@ sub ProcessFile
 
 sub VisitNode
 {
-    no warnings 'once';     #for $File::Find::name
+    no warnings qw( once uninitialized );       #File::Find is the culprit
     ( $FullFile, $CurFile ) = ( $File::Find::name, $_ );
-    unless ( grep { $FullFile eq $_ || $FullFile eq "./$_" ||
-                    ( -d $CurFile && ( $FullFile eq "$_/" ||
-                                       $FullFile eq "./$_/" ) ) } @Files )
+    my $abs_cur_file = Cwd::abs_path( $CurFile );
+    unless ( grep { $abs_cur_file eq $_ } @AbsFiles )
     {
-        if ( ! $GrepAll && $CurFile =~ $HIDDEN_FILE_PTN )
+        if ( ! $GrepAll && $CurFile =~ $HIDDEN_FILE_PTN ||
+                                    exists $GitignoreList{ $abs_cur_file } )
         {
             $File::Find::prune = 1;
             return;
-        }
-        unless ( exists $GitignoreList{ './' } )
-        {
-            ( my $file = $FullFile ) =~ s/^\.\///;
-            if ( -d $CurFile && exists $GitignoreList{ "$file/" } ||
-                                                exists $GitignoreList{ $file } )
-            {
-                $File::Find::prune = 1;
-                return;
-            }
         }
     }
     return unless -f $CurFile;
@@ -547,9 +539,9 @@ if ( $GrepRecursively )
     if ( $count == 0 || $count != @Files )
     {
         require File::Find;
-        File::Find->import( qw( find ) );
         @Files || push @Files, './';
-        find ( \&VisitNode, @Files );
+        @AbsFiles = map { Cwd::abs_path( $_ ) } @Files;
+        File::Find::find( \&VisitNode, @Files );
     }
 }
 else
