@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.1.2
+Version:    2.2.0
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Tue May 09 2023  Alexey Radkov <alexey.radkov@gmail.com> 2.2.0-1
+- hl version 2.2.0, a new hl option -gitignore to skip not tracked or
+  ignored files in git repositories, effective in recursive grep.
+
 * Mon Jan 20 2020 Alexey Radkov <alexey.radkov@gmail.com> 2.1.2-1
 - hl version 2.1.2, performance improvements.
 
