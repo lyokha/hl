@@ -32,7 +32,7 @@ Global options affect the behaviour of the program globally:
        If the file list is empty then grep starts in the current directory.
     -a greps inside hidden files and directories, implies '-r'.
        Names of hidden files and directories start with a dot symbol.
-    -gitignore ignores paths not tracked or ignored by git inside git
+    -gi (-gitignore) ignores paths not tracked or ignored by git inside git
        repositories. Effective in recursive grep.
     -f (-flist) builds the file list from the trailing arguments automatically
        when option '-' is not specified.
@@ -225,7 +225,7 @@ while ( defined ( my $arg = shift ) )
         {
             $TAGTYPE = "term"; last SWITCH_ARGS;
         }
-        if ( $arg eq "-gitignore" )
+        if ( $arg eq "-gi" || $arg eq "-gitignore" )
         {
             $Gitignore = 1; last SWITCH_ARGS;
         }
@@ -631,7 +631,7 @@ If the file list is empty then grep starts in the current directory.
 greps inside hidden files and directories, implies '-r'.
 Names of hidden files and directories start with a dot symbol.
 
-=item -gitignore
+=item -gi (-gitignore)
 
 ignores paths not tracked or ignored by git inside git repositories.
 Effective in recursive grep.

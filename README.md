@@ -161,7 +161,7 @@ highlight options).
 - **-a**  greps inside hidden files and directories, implies `-r`. Names of
       hidden files and directories start with a dot symbol.
 
-- **-gitignore**
+- **-gi (-gitignore)**
       ignores paths not tracked or ignored by git inside git repositories.
       Effective in recursive grep.
 
