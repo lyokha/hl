@@ -222,11 +222,11 @@ sub RearrangePositionsOfTags
                 #which corresponds to the last element in the @counts
                 if ( @counts )
                 {
-                    $$position[ 1 ] = $counts[ $#counts ][ 1 ];
+                    $$position[ 1 ] = $counts[ -1 ][ 1 ];
                     $$position[ 2 ] = -1;   #not 1 for correct work of
                                             #ByPositions()
-                    $$position[ 3 ] = $counts[ $#counts ][ 0 ];
-                    $$position[ 4 ] = \$$patterns[ $counts[ $#counts ][ 0 ] ];
+                    $$position[ 3 ] = $counts[ -1 ][ 0 ];
+                    $$position[ 4 ] = \$$patterns[ $counts[ -1 ][ 0 ] ];
                 }
             }
         }
@@ -298,7 +298,7 @@ sub InsertTags
                 }
             }
         }
-        substr( $$string_ref, $$position[ 0 ] + $offset, 0 ) = $colortag;
+        substr( $$string_ref, $$position[ 0 ] + $offset, 0, $colortag);
         $offset += length( $colortag );
     }
 }
