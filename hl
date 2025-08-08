@@ -3,7 +3,7 @@
 use Term::Highlight ();
 
 ( $PROGNAME = $0 ) =~ s/.*\///;
-$VERSION = "2.2.0";
+$VERSION = "2.3.0";
 $TAGTYPE = "term";
 $RC_FILE = "$ENV{ HOME }/.hlrc";
 $SNIPPET_PTN = qr/^\s*snippet\s+(\S+)\s+(.*)/;
@@ -249,6 +249,7 @@ while ( defined ( my $arg = shift ) )
                 shift @{ $Snippets{ $snippet } };
                 $UTF8Support = 1;
             }
+            unshift @{ $Snippets{ $snippet } }, '-ra';
             push @Hl_args, @{ $Snippets{ $snippet } }; last SWITCH_ARGS;
         }
         if ( $arg eq "--" )
@@ -834,7 +835,7 @@ Alexey Radkov <alexey.radkov@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008-2023 by A. Radkov.
+Copyright (C) 2008-2025 by A. Radkov.
 
 This is free software; you can redistribute it and/or modify it
 under the same terms as the Perl 5 programming language system itself.

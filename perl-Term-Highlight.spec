@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.2.0
+Version:    2.3.0
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Tue Aug 08 2025  Alexey Radkov <alexey.radkov@gmail.com> 2.3.0-1
+- hl version 2.3.0, add option '-ra' in the head of snippet arguments
+  to enable seamless usage of multiple snippets simultaneously.
+
 * Tue May 09 2023  Alexey Radkov <alexey.radkov@gmail.com> 2.2.0-1
 - hl version 2.2.0, a new hl option -gitignore to skip not tracked or
   ignored files in git repositories, effective in recursive grep.
