@@ -51,7 +51,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
-* Tue Aug 08 2025  Alexey Radkov <alexey.radkov@gmail.com> 2.3.0-1
+* Fri Aug 08 2025  Alexey Radkov <alexey.radkov@gmail.com> 2.3.0-1
 - hl version 2.3.0, add option '-ra' in the head of snippet arguments
   to enable seamless usage of multiple snippets simultaneously.
 
