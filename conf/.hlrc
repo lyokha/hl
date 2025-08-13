@@ -8,7 +8,7 @@ snippet W       -u -130 \b\p{UPPER}\w*
 snippet e       -i -196 error -203 warn(?:ing)?
 
 # lines longer than 80 columns or containing tabs or ending with spaces
-snippet f       -130 -229.1 '^.{80}(?=.)' '\t+' '\s+$'
+snippet f       -u -130 -229.1 '^.{80}(?=.)' -216.1 '\t+' '\s+$'
 
 # make in ru_RU.utf8 locale
 snippet make    -u -b -215 '^\s*gcc\b' '^\s*g\+\+(?=\s)' '^\s*libtool:\s*\w+:' \
