@@ -1,29 +1,16 @@
-function quote_args_if_needed
-{
-    local result=''
-    for i in "$@" ; do
-        if [[ -z "$i" || "$i" =~ ' ' ]] ; then
-            result=$result" '"$i"'"
-            continue
-        fi
-        result=$result' '$i
-    done
-    echo "$result"
-}
-
 function make
 {
-    $(env which make) "$@" 2>&1 | hl -smake
+    env make "$@" 2>&1 | hl -smake
 }
 
 function ngrep
 {
-    eval sudo "$(env which ngrep)" "$(quote_args_if_needed "$@")" | hl -sngrep
+    sudo -E env ngrep "$@" | hl -sngrep
 }
 
 function diff
 {
-    $(env which diff) "$@" | hl -sdiff
+    env diff "$@" | hl -sdiff
 }
 
 for vcs in cvs svn hg git ; do
@@ -37,7 +24,7 @@ function cgr
 {
     # NB: column works fine with color escape sequences since util-linux 2.28
     #     the following options for column are available since util-linux 2.32
-    $(env which cgrep) --color --format='#f ⎜ #n ⎜ #l' --no-column -r "$@" |
+    env cgrep --color --format='#f ⎜ #n ⎜ #l' --no-column -r "$@" |
             column -t -s⎜ -o⎜ -Nf,n,s -H- -d -Rn -Es |
             sed 's/\x1b\[1;94m/\x1b\[38;5;150m/
                  s/\x1b\[1m/\x1b\[38;5;227m/g' |
@@ -49,7 +36,7 @@ function hlgrep
     local width=$(($(tput cols) - 2))
     # use  (\xee\x82\xb1 / \x{e0b1}) (requires Nerd fonts)
     #  or ⎜ (\xe2\x8e\x9c / \x{239c}) as column delimiters
-    $(env which hl) -f -t -r -gi -n "$@" |
+    env hl -f -t -r -gi -n "$@" |
             sed 's/:\(\x1b\[22;38;5;224;49m[[:digit:]]\+\)'`
                `'\x1b\[22;38;5;248;49m\(\x1b\[0m\): /  \1\2  /
                  s/^\x1b\[22;38;5;248;49m--\x1b\[0m$/-  -  -/' |
