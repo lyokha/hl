@@ -1,5 +1,5 @@
 Name:       perl-Term-Highlight
-Version:    2.3.0
+Version:    2.3.1
 Release:    1%{?dist}
 License:    GPL+ or Artistic
 Group:      Development/Libraries
@@ -51,6 +51,11 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
+* Thu Nov 12 2026  Alexey Radkov <alexey.radkov@gmail.com> 2.3.1-1
+- hl version 2.3.1, with option '-gitignore', track the location of the
+  current file entry rather than simply rely on the global working directory.
+  No longer ignore hidden files if they are tracked by git.
+
 * Fri Aug 08 2025  Alexey Radkov <alexey.radkov@gmail.com> 2.3.0-1
 - hl version 2.3.0, add option '-ra' in the head of snippet arguments
   to enable seamless usage of multiple snippets simultaneously.
