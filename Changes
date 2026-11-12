@@ -1,7 +1,7 @@
 Revision history for Perl module Term::Highlight and script hl.
 
 
-2026/11/12 - Version 2.3.1 - with option '-gitignore', track the location of
+2026/11/13 - Version 2.3.1 - with option '-gitignore', track the location of
                 the current file entry rather than simply rely on the global
                 working directory. No longer ignore hidden files if they are
                 tracked by git.

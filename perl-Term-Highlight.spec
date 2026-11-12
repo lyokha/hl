@@ -51,7 +51,7 @@ rm -rf %{buildroot}
 %{_mandir}/man1/*.1*
 
 %changelog
-* Thu Nov 12 2026  Alexey Radkov <alexey.radkov@gmail.com> 2.3.1-1
+* Fri Nov 13 2026  Alexey Radkov <alexey.radkov@gmail.com> 2.3.1-1
 - hl version 2.3.1, with option '-gitignore', track the location of the
   current file entry rather than simply rely on the global working directory.
   No longer ignore hidden files if they are tracked by git.

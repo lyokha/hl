@@ -344,28 +344,34 @@ sub SetGitignoreList
     open( my $OLD_STDERR, '>&', \*STDERR );
     open( STDERR, '>', '/dev/null' );
     my $ok = open( my $GIT_STATUS, '-|', $Gitexe, '-C', $dir,
-                   '-c', 'status.relativePaths=true',
+                   '-c', 'status.relativePaths=false',
                    'status', '--ignored', '-s', '-z' );
-    my $GIT_OWNDIR;
-    $ok = open( $GIT_OWNDIR, '-|', $Gitexe, '-C', $dir,
-                'rev-parse', '--absolute-git-dir') if $ok;
+    my $GIT_INFO;
+    $ok = open( $GIT_INFO, '-|', $Gitexe, '-C', $dir,
+                'rev-parse', '--show-toplevel', '--absolute-git-dir') if $ok;
     open( STDERR, '>&', $OLD_STDERR );
     close $OLD_STDERR;
     unless ( $ok )
     {
         close $GIT_STATUS if $GIT_STATUS;
-        close $GIT_OWNDIR if $GIT_OWNDIR;
+        close $GIT_INFO if $GIT_INFO;
         return;
     }
-
-    my $gitdir = <$GIT_OWNDIR> // '';
+    my $top_gitdir = <$GIT_INFO> // '';
+    chomp $top_gitdir;
+    my $gitdir = <$GIT_INFO> // '';
     chomp $gitdir;
-    close $GIT_OWNDIR;
+    close $GIT_INFO;
 
     if ( length $gitdir )
     {
         my $abs_gitdir = Cwd::abs_path( $gitdir ) // $gitdir;
         $GitignoreList{ $abs_gitdir } = 1;
+    }
+    unless ( length $top_gitdir )
+    {
+        close $GIT_STATUS;
+        return;
     }
 
     local $/ = "\0";
@@ -379,7 +385,7 @@ sub SetGitignoreList
 
         if ( $mode eq '??' || $mode eq '!!' )
         {
-            my $abs_file = Cwd::abs_path( "$dir/$file" );
+            my $abs_file = Cwd::abs_path( "$top_gitdir/$file" );
             $GitignoreList{ $abs_file } = 1 if defined( $abs_file );
         }
     }
