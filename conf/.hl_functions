@@ -23,9 +23,9 @@ done
 function cgr
 {
     # column works fine with color escape sequences since util-linux 2.28
-    # the following options for column are available since util-linux 2.32
+    # the following options for column are available since util-linux 2.37
     env cgrep --color --format='#f ⎜ #n ⎜ #l' --no-column -r "$@" |
-            column -t -s⎜ -o⎜ -Nf,n,s -H- -d -Rn -Es |
+            column -t -s⎜ -o⎜ -Nf,n,s -l3 -d -Rn -Es |
             sed 's/\x1b\[1;94m/\x1b\[38;5;150m/
                  s/\x1b\[1m/\x1b\[38;5;227m/g' |
             hl -u -73 '\h+\d+\h+(?=\x{239C})' -216 '\x{239C}'
@@ -34,7 +34,7 @@ function cgr
 function hlgrep
 {
     # column works fine with color escape sequences since util-linux 2.28
-    # the following options for column are available since util-linux 2.32
+    # the following options for column are available since util-linux 2.37
     local width=$((${COLUMNS:-$(tput cols)} - 2))
     # use  (\xee\x82\xb1 / \x{e0b1}) (requires Nerd fonts)
     #  or ⎜ (\xe2\x8e\x9c / \x{239c}) as column delimiters
@@ -42,11 +42,11 @@ function hlgrep
             sed 's/:\(\x1b\[22;38;5;224;49m[[:digit:]]\+\)'`
                `'\x1b\[22;38;5;248;49m\(\x1b\[0m\): /  \1\2  /
                  s/^\x1b\[22;38;5;248;49m--\x1b\[0m$/-  -  -/' |
-            column -t -s -o -c$width -Nf,n,s -H- -d -Rn -Ts -Es |
+            column -t -s -o -c$width -Nf,n,s -l3 -d -Rn -Ts -Es |
             sed 's/^\(-\s*\xee\x82\xb1\s*\)\{2\}-$/'`
-               `'\x1b\[22;38;5;248;49m--\x1b\[0m/
+               `'\x1b[22;38;5;248;49m--\x1b[0m/
                  s/\xef\xbf\xbd\(\[[[:digit:]]\+\(;\([[:digit:]]\+\)\)*m\)/'`
-               `'\x1b\1/g;s/\xef\xbf\xbd.*//;s/$/\x1b\[0m/
+               `'\x1b\1/g;s/\xef\xbf\xbd.*//;s/$/\x1b[0m/
                  s/\xee\x82\xb1/\x1b[38;5;216m&\x1b[0m/g'
 }
 
