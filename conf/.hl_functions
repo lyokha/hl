@@ -40,14 +40,15 @@ function hlgrep
     #  or ⎜ (\xe2\x8e\x9c / \x{239c}) as column delimiters
     env hl -f -t -r -n "$@" |
             sed 's/:\(\x1b\[22;38;5;224;49m[[:digit:]]\+\)'`
-               `'\x1b\[22;38;5;248;49m\(\x1b\[0m\): /  \1\2  /
+               `'\x1b\[22;38;5;248;49m\x1b\[0m: /  \1\x1b\[0m  /
                  s/^\x1b\[22;38;5;248;49m--\x1b\[0m$/-  -  -/' |
             column -t -s -o -c$width -Nf,n,s -l3 -d -Rn -Ts -Es |
             sed 's/^\(-\s*\xee\x82\xb1\s*\)\{2\}-$/'`
                `'\x1b[22;38;5;248;49m--\x1b[0m/
                  s/\xef\xbf\xbd\(\[[[:digit:]]\+\(;\([[:digit:]]\+\)\)*m\)/'`
                `'\x1b\1/g;s/\xef\xbf\xbd.*//;s/$/\x1b[0m/
-                 s/\xee\x82\xb1/\x1b[38;5;216m&\x1b[0m/g'
+                 s/\xee\x82\xb1/\x1b[38;5;216m&\x1b[0m/
+                 s/\xee\x82\xb1\s/\x1b[38;5;216m&\x1b[0m/'
 }
 
 # vim: ft=sh
